@@ -220,7 +220,7 @@ void testHardwarePins() {
   } else if (valDMinus == LOW && valDPlus == HIGH) {
     Serial.println(F("-> ERROR: Cables Verde y Blanco INVERTIDOS!"));
   } else if (valDMinus == LOW && valDPlus == LOW) {
-    Serial.println(F("-> ERROR: Falta resistencia 1.5k a 5V en cable blanco!"));
+    Serial.println(F("-> ERROR: Falta resistencia 1.5k a 3.3V en cable blanco!"));
   }
 
   usbInit();
@@ -567,22 +567,24 @@ void loop() {
             int dx = atoi(cmdBuffer + 2);
             int dy = atoi(comma + 1);
             UsbKeyboard.mouseMove((int8_t)dx, (int8_t)dy);
-            Serial.println(F("OK: MOUSE MOVE"));
-          } else {
-            Serial.println(F("ERR: FORMATO #M:dx,dy"));
+            UsbKeyboard.update();
           }
         } else if (strcmp(cmdBuffer, "ML") == 0) {
           UsbKeyboard.mouseClick(1);
+          UsbKeyboard.update();
           Serial.println(F("OK: MOUSE CLICK LEFT"));
         } else if (strcmp(cmdBuffer, "MR") == 0) {
           UsbKeyboard.mouseClick(2);
+          UsbKeyboard.update();
           Serial.println(F("OK: MOUSE CLICK RIGHT"));
         } else if (strcmp(cmdBuffer, "MM") == 0) {
           UsbKeyboard.mouseClick(4);
+          UsbKeyboard.update();
           Serial.println(F("OK: MOUSE CLICK MIDDLE"));
         } else if (strncmp(cmdBuffer, "MB:", 3) == 0) {
           int btn = atoi(cmdBuffer + 3);
           UsbKeyboard.mouseClick((uint8_t)(btn > 0 ? btn : 1));
+          UsbKeyboard.update();
           Serial.println(F("OK: MOUSE BUTTON CLICK"));
         } else if (strncmp(cmdBuffer, "MD", 2) == 0) {
           // #MD:btn o #MD (pulsar y mantener para arrastre)
@@ -594,6 +596,7 @@ void loop() {
             else btn = atoi(cmdBuffer + 3);
           }
           UsbKeyboard.mousePress(btn > 0 ? btn : 1);
+          UsbKeyboard.update();
           Serial.println(F("OK: MOUSE BUTTON DOWN"));
         } else if (strncmp(cmdBuffer, "MU", 2) == 0) {
           // #MU:btn o #MU (soltar botón)
@@ -605,11 +608,12 @@ void loop() {
             else btn = atoi(cmdBuffer + 3);
           }
           UsbKeyboard.mouseRelease(btn);
+          UsbKeyboard.update();
           Serial.println(F("OK: MOUSE BUTTON UP"));
         } else if (strncmp(cmdBuffer, "MW:", 3) == 0) {
           int dz = atoi(cmdBuffer + 3);
           UsbKeyboard.mouseScroll((int8_t)dz);
-          Serial.println(F("OK: MOUSE WHEEL"));
+          UsbKeyboard.update();
         }
         // Comandos de modo y diagnóstico originales
         else if (strcmp(cmdBuffer, "BIOS") == 0 || strcmp(cmdBuffer, "MODO2") == 0) {

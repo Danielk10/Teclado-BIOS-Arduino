@@ -113,37 +113,23 @@
         <!-- Mode Toggle Button -->
         <Button
             android:id="@+id/btnToggleMode"
+            style="@style/HeaderButton"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:background="@drawable/bg_key_action"
             android:text="@string/mode_bios"
-            android:textColor="#FFFFFF"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:paddingHorizontal="8dp"
-            android:minHeight="0dp"
-            android:includeFontPadding="false"
-            android:stateListAnimator="@null"
             android:layout_marginEnd="6dp" />
 
         <!-- Descargar Firmware Button -->
         <Button
             android:id="@+id/btnDownloadFirmware"
+            style="@style/HeaderButton"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:background="@drawable/bg_key_standard"
             android:drawableStart="@drawable/ic_download"
             android:drawablePadding="4dp"
-            android:text="@string/download_firmware"
-            android:textColor="#FFFFFF"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:paddingHorizontal="8dp"
-            android:minHeight="0dp"
-            android:includeFontPadding="false"
-            android:stateListAnimator="@null" />
+            android:text="@string/download_firmware" />
     </LinearLayout>
 
     <!-- 2. TOP MOUSE PANEL (ENLARGED TOUCHPAD + 3 BOTONES: L, M, R) -->
@@ -211,57 +197,33 @@
 
             <Button
                 android:id="@+id/btnMouseLeft"
+                style="@style/MouseButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="1dp"
+                android:layout_margin="1.5dp"
                 android:background="@drawable/bg_mouse_button_blue"
-                android:text="CLIC IZQ\n(L)"
-                android:textColor="#FFFFFF"
-                android:textSize="10.5sp"
-                android:textStyle="bold"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="0dp"
-                android:includeFontPadding="false"
-                android:lineSpacingMultiplier="0.85"
-                android:stateListAnimator="@null" />
+                android:text="CLIC IZQ\n(L)" />
 
             <Button
                 android:id="@+id/btnMouseMiddle"
+                style="@style/MouseButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="1dp"
+                android:layout_margin="1.5dp"
                 android:background="@drawable/bg_mouse_button_amber"
-                android:text="RUEDA\n(M)"
-                android:textColor="#FFFFFF"
-                android:textSize="10.5sp"
-                android:textStyle="bold"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="0dp"
-                android:includeFontPadding="false"
-                android:lineSpacingMultiplier="0.85"
-                android:stateListAnimator="@null" />
+                android:text="RUEDA\n(M)" />
 
             <Button
                 android:id="@+id/btnMouseRight"
+                style="@style/MouseButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="1dp"
+                android:layout_margin="1.5dp"
                 android:background="@drawable/bg_mouse_button_blue"
-                android:text="CLIC DER\n(R)"
-                android:textColor="#FFFFFF"
-                android:textSize="10.5sp"
-                android:textStyle="bold"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="0dp"
-                android:includeFontPadding="false"
-                android:lineSpacingMultiplier="0.85"
-                android:stateListAnimator="@null" />
+                android:text="CLIC DER\n(R)" />
         </LinearLayout>
     </LinearLayout>
 
@@ -497,16 +459,14 @@
 
                     <Button
                         android:id="@+id/btnDpadCenter"
+                        style="@style/BiosKeyButton"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.2"
                         android:layout_marginHorizontal="2dp"
                         android:background="@drawable/bg_dpad_center"
                         android:text="@string/key_dpad_ok"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:stateListAnimator="@null" />
+                        android:textSize="12sp" />
 
                     <ImageButton
                         android:id="@+id/btnDpadRight"
@@ -739,7 +699,7 @@
         <!-- Top sub-bar: Title, Input, Send, Copy, Clear -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="28dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
@@ -748,7 +708,7 @@
                 android:layout_height="wrap_content"
                 android:text="TX/RX SERIAL 9600 8N1:"
                 android:textColor="@color/terminal_info"
-                android:textSize="9sp"
+                android:textSize="9.5sp"
                 android:fontFamily="monospace"
                 android:textStyle="bold" />
 
@@ -762,9 +722,9 @@
                 android:hint="@string/cmd_hint"
                 android:textColorHint="@color/text_muted"
                 android:textColor="@color/text_primary"
-                android:textSize="9sp"
+                android:textSize="10sp"
                 android:fontFamily="monospace"
-                android:paddingHorizontal="6dp"
+                android:paddingHorizontal="8dp"
                 android:paddingVertical="0dp"
                 android:layout_marginHorizontal="4dp"
                 android:singleLine="true"
@@ -772,22 +732,15 @@
 
             <Button
                 android:id="@+id/btnSendCmd"
+                style="@style/TerminalSendButton"
                 android:layout_width="wrap_content"
-                android:layout_height="22dp"
-                android:background="@drawable/bg_key_action"
-                android:text="@string/send_cmd"
-                android:textColor="#FFFFFF"
-                android:textSize="9.5sp"
-                android:textStyle="bold"
-                android:paddingHorizontal="8dp"
-                android:minHeight="0dp"
-                android:includeFontPadding="false"
-                android:stateListAnimator="@null" />
+                android:layout_height="match_parent"
+                android:text="ENVIAR" />
 
             <ImageButton
                 android:id="@+id/btnCopyLog"
-                android:layout_width="26dp"
-                android:layout_height="22dp"
+                android:layout_width="28dp"
+                android:layout_height="match_parent"
                 android:background="@drawable/bg_key_standard"
                 android:src="@drawable/ic_copy"
                 android:contentDescription="@string/copy_log"
@@ -795,8 +748,8 @@
 
             <ImageButton
                 android:id="@+id/btnClearLog"
-                android:layout_width="26dp"
-                android:layout_height="22dp"
+                android:layout_width="28dp"
+                android:layout_height="match_parent"
                 android:background="@drawable/bg_key_standard"
                 android:src="@drawable/ic_clear"
                 android:contentDescription="@string/clear_log"
