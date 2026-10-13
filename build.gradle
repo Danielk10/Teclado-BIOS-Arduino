@@ -1,0 +1,6 @@
+plugins {
+    alias(libs.plugins.android.application) apply false
+}
+
+// Redirigir la carpeta build del proyecto raíz a /tmp para proteger el disco de Cloud Shell
+layout.buildDirectory.set(file("/tmp/teclado-bios/root-build"))

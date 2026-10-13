@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Backgrounds -->
+    <color name="bg_dark">#0A0E17</color>
+    <color name="bg_surface">#111827</color>
+    <color name="bg_cluster">#161E2E</color>
+    <color name="bg_panel">#0D131F</color>
+
+    <!-- Key Backgrounds -->
+    <color name="key_normal">#1E293B</color>
+    <color name="key_pressed">#334155</color>
+    <color name="key_stroke">#334155</color>
+    <color name="key_stroke_highlight">#38BDF8</color>
+
+    <!-- Highlight BIOS Colors -->
+    <color name="bios_amber">#FF9100</color>
+    <color name="bios_amber_pressed">#FFAB40</color>
+    <color name="bios_amber_bg">#2A1D0B</color>
+    <color name="bios_amber_stroke">#FF9100</color>
+
+    <color name="bios_cyan">#00E5FF</color>
+    <color name="bios_cyan_pressed">#84FFFF</color>
+    <color name="bios_cyan_bg">#092635</color>
+    <color name="bios_cyan_stroke">#00E5FF</color>
+
+    <color name="action_blue">#2563EB</color>
+    <color name="action_blue_pressed">#3B82F6</color>
+
+    <!-- Status Indicator Colors -->
+    <color name="status_green">#00E676</color>
+    <color name="status_green_glow">#3300E676</color>
+    <color name="status_red">#FF1744</color>
+    <color name="status_red_glow">#33FF1744</color>
+    <color name="status_amber">#FFC400</color>
+
+    <!-- Terminal Colors -->
+    <color name="terminal_bg">#05080E</color>
+    <color name="terminal_tx">#38BDF8</color>
+    <color name="terminal_rx">#00E676</color>
+    <color name="terminal_info">#94A3B8</color>
+    <color name="terminal_border">#1E293B</color>
+
+    <!-- Typography -->
+    <color name="text_primary">#F8FAFC</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_muted">#64748B</color>
+
+    <!-- App theme base -->
+    <color name="colorPrimary">#00E5FF</color>
+    <color name="colorPrimaryVariant">#0284C7</color>
+    <color name="colorOnPrimary">#0A0E17</color>
+    <color name="colorSecondary">#FF9100</color>
+</resources>

@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark"
+    android:padding="4dp">
+
+    <!-- 1. HEADER / STATUS BAR -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="4dp">
+
+        <!-- App Logo & Title -->
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:contentDescription="@string/app_name" />
+
+        <TextView
+            android:id="@+id/tvAppTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_app"
+            android:textColor="@color/bios_cyan"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginStart="6dp" />
+
+        <!-- USB Connection Chip -->
+        <LinearLayout
+            android:id="@+id/chipUsbStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_status_chip"
+            android:layout_marginStart="8dp"
+            android:paddingHorizontal="8dp">
+
+            <ImageView
+                android:id="@+id/ivUsbIcon"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_usb"
+                app:tint="@color/text_muted"
+                android:contentDescription="USB Status" />
+
+            <TextView
+                android:id="@+id/tvUsbStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/usb_disconnected"
+                android:textColor="@color/status_red"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:layout_marginStart="4dp" />
+        </LinearLayout>
+
+        <!-- PC Link LED Indicator -->
+        <LinearLayout
+            android:id="@+id/chipPcLink"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_status_chip"
+            android:layout_marginStart="6dp"
+            android:paddingHorizontal="8dp">
+
+            <View
+                android:id="@+id/viewPcLinkLed"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/bg_led_pc" />
+
+            <TextView
+                android:id="@+id/tvPcLinkStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pc_link_disconnected"
+                android:textColor="@color/status_red"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:layout_marginStart="5dp" />
+        </LinearLayout>
+
+        <!-- Last Sent Key Chip -->
+        <TextView
+            android:id="@+id/tvLastKey"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:background="@drawable/bg_status_chip"
+            android:gravity="center"
+            android:text="@string/last_key_none"
+            android:textColor="@color/text_primary"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:layout_marginStart="6dp"
+            android:paddingHorizontal="8dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- Mode Toggle Button -->
+        <Button
+            android:id="@+id/btnToggleMode"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:background="@drawable/bg_key_action"
+            android:text="@string/mode_bios"
+            android:textColor="@color/bios_cyan"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:paddingHorizontal="8dp"
+            android:stateListAnimator="@null"
+            android:layout_marginEnd="6dp" />
+
+        <!-- Descargar Firmware Button -->
+        <Button
+            android:id="@+id/btnDownloadFirmware"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:background="@drawable/bg_key_standard"
+            android:drawableStart="@drawable/ic_download"
+            android:drawablePadding="4dp"
+            android:text="@string/download_firmware"
+            android:textColor="@color/text_primary"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:paddingHorizontal="8dp"
+            android:stateListAnimator="@null" />
+    </LinearLayout>
+
+    <!-- 2. TOP MOUSE PANEL (TOUCHPAD + 3 BOTONES: L, M, R) -->
+    <LinearLayout
+        android:id="@+id/layoutMousePanel"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_cluster_card"
+        android:layout_marginVertical="2dp"
+        android:padding="3dp">
+
+        <!-- Mouse Title / Mode Indicator -->
+        <LinearLayout
+            android:layout_width="74dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingHorizontal="2dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_mouse"
+                android:contentDescription="Mouse BIOS" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RATÓN UEFI"
+                android:textColor="@color/bios_cyan"
+                android:textSize="9sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Touchpad Surface -->
+        <FrameLayout
+            android:id="@+id/viewTouchpad"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_touchpad"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginHorizontal="3dp">
+
+            <TextView
+                android:id="@+id/tvTouchpadHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="TOUCHPAD: Desliza cursor | Tap: Click Izq | 2 Dedos: Click Der"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp" />
+        </FrameLayout>
+
+        <!-- 3 Mouse Buttons: Left, Middle/Wheel, Right -->
+        <LinearLayout
+            android:layout_width="220dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnMouseLeft"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="1dp"
+                android:background="@drawable/bg_mouse_button"
+                android:text="IZQ (L)"
+                android:textColor="@color/text_primary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:stateListAnimator="@null" />
+
+            <Button
+                android:id="@+id/btnMouseMiddle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="1dp"
+                android:background="@drawable/bg_mouse_button"
+                android:text="MED (M)"
+                android:textColor="@color/bios_amber"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:stateListAnimator="@null" />
+
+            <Button
+                android:id="@+id/btnMouseRight"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="1dp"
+                android:background="@drawable/bg_mouse_button"
+                android:text="DER (R)"
+                android:textColor="@color/text_primary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:stateListAnimator="@null" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 3. MAIN KEYBOARD AREA (3 CLUSTERS: BIOS, DPAD, QWERTY) -->
+    <LinearLayout
+        android:id="@+id/layoutKeyboardArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <!-- CLUSTER 1: DEDICATED BIOS ACTION KEYS (Left) -->
+        <LinearLayout
+            android:id="@+id/clusterBios"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.6"
+            android:orientation="vertical"
+            android:background="@drawable/bg_cluster_card"
+            android:padding="3dp"
+            android:layout_marginEnd="2dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cluster_bios_keys"
+                android:textColor="@color/bios_amber"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="2dp" />
+
+            <!-- Row 1: DEL (SUPR) & F2 (Highlight BIOS Entry) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_marginBottom="2dp">
+
+                <Button
+                    android:id="@+id/btnKeyDel"
+                    style="@style/BiosKeyButton.Alert"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="2dp"
+                    android:text="@string/key_del" />
+
+                <Button
+                    android:id="@+id/btnKeyF2"
+                    style="@style/BiosKeyButton.Alert"
+                    android:layout_weight="1"
+                    android:layout_marginStart="2dp"
+                    android:text="@string/key_f2" />
+            </LinearLayout>
+
+            <!-- Row 2: F11 & F12 (Boot Menu Keys) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_marginBottom="2dp">
+
+                <Button
+                    android:id="@+id/btnKeyF11"
+                    style="@style/BiosKeyButton.Action"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="2dp"
+                    android:text="@string/key_f11" />
+
+                <Button
+                    android:id="@+id/btnKeyF12"
+                    style="@style/BiosKeyButton.Action"
+                    android:layout_weight="1"
+                    android:layout_marginStart="2dp"
+                    android:text="@string/key_f12" />
+            </LinearLayout>
+
+            <!-- Row 3: F10 & ESC (Save / Cancel) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_marginBottom="2dp">
+
+                <Button
+                    android:id="@+id/btnKeyF10"
+                    style="@style/BiosKeyButton.Action"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="2dp"
+                    android:text="@string/key_f10" />
+
+                <Button
+                    android:id="@+id/btnKeyEsc"
+                    style="@style/BiosKeyButton"
+                    android:layout_weight="1"
+                    android:layout_marginStart="2dp"
+                    android:text="@string/key_esc" />
+            </LinearLayout>
+
+            <!-- Row 4: ENTER & TAB -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_marginBottom="2dp">
+
+                <Button
+                    android:id="@+id/btnKeyEnter"
+                    style="@style/BiosKeyButton.Action"
+                    android:layout_weight="1.2"
+                    android:layout_marginEnd="2dp"
+                    android:text="@string/key_enter" />
+
+                <Button
+                    android:id="@+id/btnKeyTab"
+                    style="@style/BiosKeyButton"
+                    android:layout_weight="0.8"
+                    android:layout_marginStart="2dp"
+                    android:text="@string/key_tab" />
+            </LinearLayout>
+
+            <!-- Row 5: SPACE, +, - -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnKeySpace"
+                    style="@style/BiosKeyButton"
+                    android:layout_weight="1.2"
+                    android:layout_marginEnd="2dp"
+                    android:text="@string/key_space" />
+
+                <Button
+                    android:id="@+id/btnKeyPlus"
+                    style="@style/BiosKeyButton"
+                    android:layout_weight="0.9"
+                    android:layout_marginHorizontal="1dp"
+                    android:text="@string/key_plus"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/btnKeyMinus"
+                    style="@style/BiosKeyButton"
+                    android:layout_weight="0.9"
+                    android:layout_marginStart="2dp"
+                    android:text="@string/key_minus"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- CLUSTER 2: DIRECTIONAL D-PAD (Center) -->
+        <LinearLayout
+            android:id="@+id/clusterDpad"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.0"
+            android:orientation="vertical"
+            android:background="@drawable/bg_cluster_card"
+            android:padding="3dp"
+            android:layout_marginHorizontal="2dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cluster_dpad"
+                android:textColor="@color/bios_cyan"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="2dp" />
+
+            <!-- D-Pad Grid 3x3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <!-- Row 1: UP Arrow -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                    <ImageButton
+                        android:id="@+id/btnDpadUp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:background="@drawable/bg_dpad_button"
+                        android:src="@drawable/ic_arrow_up"
+                        android:scaleType="centerInside"
+                        android:contentDescription="Arriba" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <!-- Row 2: LEFT, CENTER OK, RIGHT -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginVertical="2dp">
+
+                    <ImageButton
+                        android:id="@+id/btnDpadLeft"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_dpad_button"
+                        android:src="@drawable/ic_arrow_left"
+                        android:scaleType="centerInside"
+                        android:contentDescription="Izquierda" />
+
+                    <Button
+                        android:id="@+id/btnDpadCenter"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:layout_marginHorizontal="2dp"
+                        android:background="@drawable/bg_dpad_center"
+                        android:text="@string/key_dpad_ok"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:stateListAnimator="@null" />
+
+                    <ImageButton
+                        android:id="@+id/btnDpadRight"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_dpad_button"
+                        android:src="@drawable/ic_arrow_right"
+                        android:scaleType="centerInside"
+                        android:contentDescription="Derecha" />
+                </LinearLayout>
+
+                <!-- Row 3: DOWN Arrow -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                    <ImageButton
+                        android:id="@+id/btnDpadDown"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:background="@drawable/bg_dpad_button"
+                        android:src="@drawable/ic_arrow_down"
+                        android:scaleType="centerInside"
+                        android:contentDescription="Abajo" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- CLUSTER 3: FULL QWERTY KEYBOARD (Right) -->
+        <LinearLayout
+            android:id="@+id/clusterQwerty"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5.4"
+            android:orientation="vertical"
+            android:background="@drawable/bg_cluster_card"
+            android:padding="3dp"
+            android:layout_marginStart="2dp">
+
+            <!-- Numbers Row 1-0 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button android:id="@+id/key_1" style="@style/KeyboardKey" android:text="1" />
+                <Button android:id="@+id/key_2" style="@style/KeyboardKey" android:text="2" />
+                <Button android:id="@+id/key_3" style="@style/KeyboardKey" android:text="3" />
+                <Button android:id="@+id/key_4" style="@style/KeyboardKey" android:text="4" />
+                <Button android:id="@+id/key_5" style="@style/KeyboardKey" android:text="5" />
+                <Button android:id="@+id/key_6" style="@style/KeyboardKey" android:text="6" />
+                <Button android:id="@+id/key_7" style="@style/KeyboardKey" android:text="7" />
+                <Button android:id="@+id/key_8" style="@style/KeyboardKey" android:text="8" />
+                <Button android:id="@+id/key_9" style="@style/KeyboardKey" android:text="9" />
+                <Button android:id="@+id/key_0" style="@style/KeyboardKey" android:text="0" />
+            </LinearLayout>
+
+            <!-- Row 1: Q W E R T Y U I O P -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button android:id="@+id/key_q" style="@style/KeyboardKey" android:text="Q" />
+                <Button android:id="@+id/key_w" style="@style/KeyboardKey" android:text="W" />
+                <Button android:id="@+id/key_e" style="@style/KeyboardKey" android:text="E" />
+                <Button android:id="@+id/key_r" style="@style/KeyboardKey" android:text="R" />
+                <Button android:id="@+id/key_t" style="@style/KeyboardKey" android:text="T" />
+                <Button android:id="@+id/key_y" style="@style/KeyboardKey" android:text="Y" />
+                <Button android:id="@+id/key_u" style="@style/KeyboardKey" android:text="U" />
+                <Button android:id="@+id/key_i" style="@style/KeyboardKey" android:text="I" />
+                <Button android:id="@+id/key_o" style="@style/KeyboardKey" android:text="O" />
+                <Button android:id="@+id/key_p" style="@style/KeyboardKey" android:text="P" />
+            </LinearLayout>
+
+            <!-- Row 2: A S D F G H J K L Ñ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button android:id="@+id/key_a" style="@style/KeyboardKey" android:text="A" />
+                <Button android:id="@+id/key_s" style="@style/KeyboardKey" android:text="S" />
+                <Button android:id="@+id/key_d" style="@style/KeyboardKey" android:text="D" />
+                <Button android:id="@+id/key_f" style="@style/KeyboardKey" android:text="F" />
+                <Button android:id="@+id/key_g" style="@style/KeyboardKey" android:text="G" />
+                <Button android:id="@+id/key_h" style="@style/KeyboardKey" android:text="H" />
+                <Button android:id="@+id/key_j" style="@style/KeyboardKey" android:text="J" />
+                <Button android:id="@+id/key_k" style="@style/KeyboardKey" android:text="K" />
+                <Button android:id="@+id/key_l" style="@style/KeyboardKey" android:text="L" />
+                <Button android:id="@+id/key_nn" style="@style/KeyboardKey" android:text="Ñ" />
+            </LinearLayout>
+
+            <!-- Row 3: Z X C V B N M, CAD, BS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button android:id="@+id/key_z" style="@style/KeyboardKey" android:text="Z" />
+                <Button android:id="@+id/key_x" style="@style/KeyboardKey" android:text="X" />
+                <Button android:id="@+id/key_c" style="@style/KeyboardKey" android:text="C" />
+                <Button android:id="@+id/key_v" style="@style/KeyboardKey" android:text="V" />
+                <Button android:id="@+id/key_b" style="@style/KeyboardKey" android:text="B" />
+                <Button android:id="@+id/key_n" style="@style/KeyboardKey" android:text="N" />
+                <Button android:id="@+id/key_m" style="@style/KeyboardKey" android:text="M" />
+
+                <!-- CAD (Ctrl+Alt+Del) Shortcut Key -->
+                <Button
+                    android:id="@+id/btnKeyCad"
+                    style="@style/KeyboardKey"
+                    android:layout_weight="1.6"
+                    android:background="@drawable/bg_key_bios_alert"
+                    android:text="@string/key_cad"
+                    android:textColor="@color/bios_amber"
+                    android:textSize="9sp" />
+
+                <!-- Backspace Key -->
+                <Button
+                    android:id="@+id/key_bs"
+                    style="@style/KeyboardKey"
+                    android:layout_weight="1.4"
+                    android:text="@string/key_bs"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <!-- Row 4: Extra Quick Diagnostics & USB Tools -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.9"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnTestHardware"
+                    style="@style/KeyboardKey"
+                    android:layout_weight="1"
+                    android:text="@string/btn_test"
+                    android:textColor="@color/bios_cyan"
+                    android:textSize="9sp" />
+
+                <Button
+                    android:id="@+id/btnResetUsb"
+                    style="@style/KeyboardKey"
+                    android:layout_weight="1"
+                    android:text="@string/btn_reset"
+                    android:textColor="@color/status_red"
+                    android:textSize="9sp" />
+
+                <Button
+                    android:id="@+id/btnQueryStatus"
+                    style="@style/KeyboardKey"
+                    android:layout_weight="1"
+                    android:text="@string/btn_query"
+                    android:textColor="@color/bios_amber"
+                    android:textSize="9sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 4. BOTTOM MINI SERIAL MONITOR (Live RX/TX Terminal) -->
+    <LinearLayout
+        android:id="@+id/layoutBottomTerminal"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_terminal"
+        android:layout_marginTop="2dp"
+        android:padding="2dp">
+
+        <!-- Top sub-bar: Title, Input, Send, Clear -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TX/RX SERIAL 9600 8N1:"
+                android:textColor="@color/terminal_info"
+                android:textSize="9sp"
+                android:fontFamily="monospace"
+                android:textStyle="bold" />
+
+            <!-- Manual Command Input -->
+            <EditText
+                android:id="@+id/etManualCmd"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_key_standard"
+                android:hint="@string/cmd_hint"
+                android:textColorHint="@color/text_muted"
+                android:textColor="@color/text_primary"
+                android:textSize="9sp"
+                android:fontFamily="monospace"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="0dp"
+                android:layout_marginHorizontal="4dp"
+                android:singleLine="true"
+                android:imeOptions="actionSend" />
+
+            <Button
+                android:id="@+id/btnSendCmd"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:background="@drawable/bg_key_action"
+                android:text="@string/send_cmd"
+                android:textColor="@color/bios_cyan"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="6dp"
+                android:stateListAnimator="@null" />
+
+            <ImageButton
+                android:id="@+id/btnClearLog"
+                android:layout_width="22dp"
+                android:layout_height="20dp"
+                android:background="@drawable/bg_key_standard"
+                android:src="@drawable/ic_clear"
+                android:contentDescription="@string/clear_log"
+                android:layout_marginStart="4dp" />
+        </LinearLayout>
+
+        <!-- Scrollable Log Output -->
+        <ScrollView
+            android:id="@+id/scrollSerialLog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:fadeScrollbars="false">
+
+            <TextView
+                android:id="@+id/tvSerialLog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/terminal_rx"
+                android:textSize="9sp"
+                android:fontFamily="monospace"
+                android:text="[SISTEMA] Listo. Conecte el Arduino por USB OTG..." />
+        </ScrollView>
+    </LinearLayout>
+
+</LinearLayout>

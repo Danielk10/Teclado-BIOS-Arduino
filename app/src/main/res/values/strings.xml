@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Teclado BIOS Arduino</string>
+    <string name="title_app">Teclado BIOS Arduino</string>
+    <string name="title_badge">USB OTG HID</string>
+
+    <!-- USB Status -->
+    <string name="usb_disconnected">USB: Desconectado</string>
+    <string name="usb_connected">USB: Conectado</string>
+    <string name="usb_connecting">USB: Conectando...</string>
+
+    <!-- PC Link Status -->
+    <string name="pc_link_disconnected">PC: Desconectada</string>
+    <string name="pc_link_connected">PC: Conectada</string>
+
+    <!-- Last Key -->
+    <string name="last_key_none">Última: -</string>
+    <string name="last_key_format">Última: %1$s</string>
+
+    <!-- Mode -->
+    <string name="mode_bios">Modo: BIOS Rápido</string>
+    <string name="mode_text">Modo: Texto Libre</string>
+    <string name="toggle_mode">Cambiar Modo</string>
+
+    <!-- Actions -->
+    <string name="download_firmware">Exportar Firmware</string>
+    <string name="clear_log">Limpiar</string>
+    <string name="send_cmd">Enviar</string>
+    <string name="cmd_hint">Comando o texto manual (#TEST, #RESET, #AYUDA, \?)...</string>
+
+    <!-- Cluster Headers -->
+    <string name="cluster_bios_keys">ACCIONES BIOS</string>
+    <string name="cluster_dpad">NAVEGACIÓN</string>
+    <string name="cluster_keyboard">TECLADO QWERTY</string>
+    <string name="cluster_monitor">MONITOR SERIAL EN VIVO</string>
+
+    <!-- Key Labels -->
+    <string name="key_del">SUPR\nDEL</string>
+    <string name="key_f2">F2\nSETUP</string>
+    <string name="key_f11">F11\nBOOT</string>
+    <string name="key_f12">F12\nBOOT</string>
+    <string name="key_f10">F10\nGUARDAR</string>
+    <string name="key_esc">ESC\nATRÁS</string>
+    <string name="key_enter">ENTER\nCONFIRMAR</string>
+    <string name="key_tab">TAB\nCAMBIAR</string>
+    <string name="key_space">ESPACIO</string>
+    <string name="key_plus">+</string>
+    <string name="key_minus">-</string>
+    <string name="key_cad">CTRL+ALT+DEL</string>
+    <string name="key_dpad_ok">OK</string>
+    <string name="key_bs">⌫ BORRAR</string>
+
+    <!-- Diagnostics and tools -->
+    <string name="btn_test">#TEST PINES</string>
+    <string name="btn_reset">#RESET USB</string>
+    <string name="btn_query">"? ESTADO"</string>
+
+    <!-- Messages -->
+    <string name="firmware_exporting">Exportando archivos de firmware...</string>
+    <string name="firmware_exported_success">Firmware exportado exitosamente en: %1$s</string>
+    <string name="firmware_export_error">Error al exportar firmware: %1$s</string>
+    <string name="usb_permission_denied">Permiso USB denegado por el usuario.</string>
+    <string name="no_usb_device">Conecte el Arduino Uno con cable OTG.</string>
+</resources>
