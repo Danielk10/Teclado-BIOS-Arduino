@@ -14,6 +14,7 @@ Una aplicación Android diseñada para convertir tu smartphone o tablet en un te
 - [Características Principales](#-características-principales)
 - [Arquitectura del Sistema](#-arquitectura-del-sistema)
 - [Diagrama de Conexión de Hardware](#-diagrama-de-conexión-de-hardware)
+- [Guía de Diagnóstico Técnico V-USB](DIAGNOSTICO_PROBLEMA_VUSB.md)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
 - [Requisitos Previos](#-requisitos-previos)
 - [Instalación y Configuración del SDK](#-instalación-y-configuración-del-sdk)
@@ -185,6 +186,8 @@ Una vez ensamblado el circuito, antes de conectar la PC puedes comprobar que las
    * **`ERROR: CABLES INVERTIDOS`** $\to$ El cable verde y blanco están al revés (intercambia D2 y D4).
    * **`ERROR: FALTA RESISTENCIA PULL-UP 1.5K`** $\to$ La línea D- está en 0V. Revisa la resistencia de 1.5kΩ hacia el pin 5V (o D5).
 
+> [!TIP]
+> Si experimentas reinicios continuos del Arduino al encender la PC o dificultades con menús emergentes en la BIOS, consulta la [Guía Técnica de Diagnóstico V-USB](DIAGNOSTICO_PROBLEMA_VUSB.md) para detalles sobre vectores de interrupción GCC y tiempos de retención.
 
 ---
 
@@ -195,6 +198,7 @@ Teclado-BIOS-Arduino/
 ├── .gitignore
 ├── LICENSE
 ├── README.md
+├── DIAGNOSTICO_PROBLEMA_VUSB.md # Guía técnica de diagnóstico V-USB e interrupciones
 ├── build.gradle               # Build script raíz con redirección a /tmp
 ├── gradle.properties          # Memoria JVM y variables de entorno
 ├── local.properties           # Ruta al SDK de Android
