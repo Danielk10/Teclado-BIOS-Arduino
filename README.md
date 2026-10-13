@@ -27,10 +27,16 @@ Una aplicación Android diseñada para convertir tu smartphone o tablet en un te
 ## ✨ Características Principales
 
 - **Conexión Directa USB OTG:** Comunicación serie de baja latencia con Arduino mediante la biblioteca `usb-serial-for-android` (compatible con CH340, CP2102, FT232, PL2303 y CDC-ACM nativo).
-- **Teclas Dedicadas para BIOS/UEFI:** Botones táctiles específicos para navegación rápida: `DEL`, `F1`-`F12`, `ESC`, `ENTER`, flechas direccionales (`UP`, `DOWN`, `LEFT`, `RIGHT`), `TAB` y atajos de guardado (`F10`).
-- **Detección Automática de Dispositivos:** Identificación automática del hardware Arduino al conectar el cable OTG.
-- **Configuración de Baud Rate Flexible:** Selección dinámica de velocidad de transmisión (9600, 19200, 38400, 57600, 115200 bps).
-- **Consola de Diagnóstico Serie:** Visualización de mensajes de estado y datos bidireccionales en tiempo real.
+- **Emulación Compuesta Teclado + Ratón USB HID:** Soporte simultáneo por un único puerto USB de teclado BIOS y ratón para interfaces modernas UEFI y sistemas operativos (Windows, Linux, macOS).
+- **Touchpad Táctil Ampliado con Gestos:** Superficie de control táctil de gran tamaño con soporte para:
+  - Deslizamiento con 1 dedo para mover el cursor del ratón.
+  - Toque con 1 dedo: Clic Izquierdo instantáneo.
+  - Toque con 2 dedos: Clic Derecho.
+  - Deslizamiento vertical con 2 dedos: Rueda de desplazamiento (Scroll Wheel `#MW:dz`).
+- **3 Botones Físicos de Ratón Verificados:** Clic Izquierdo (`L`), Rueda Central (`M`) y Clic Derecho (`R`) con soporte completo de clic simple y arrastre continuo (`#MD:L/R/M` y `#MU:L/R/M`).
+- **Teclas Dedicadas para BIOS/UEFI:** Botones táctiles específicos para navegación rápida: `SUPR/DEL`, `F2 SETUP`, `F11 BOOT`, `F12 BOOT`, `F10 GUARDAR`, `ESC`, `ENTER`, `TAB`, `ESPACIO`, `+ (SUBIR)`, `- (BAJAR)`, `F1 AYUDA`, `F9 DEFAULT`, `RE PÁG` y `AV PÁG`.
+- **D-Pad de Navegación Direccional:** Cruzeta con flechas `UP`, `DOWN`, `LEFT`, `RIGHT` y botón central `OK/ENTER`.
+- **Consola Serie Ampliada con Copiado Fácil:** Altura expandida para visualización clara de logs TX/RX, con botón dedicado de copiado al portapapeles y soporte de **pulsación sostenida** sobre el texto para copiar instantáneamente todo el registro.
 - **Sin Dependencias de Nube ni Bloatware:** Aplicación 100% offline, ligera y respetuosa con los recursos.
 
 ---

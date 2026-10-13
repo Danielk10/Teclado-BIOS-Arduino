@@ -35,8 +35,8 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
 
     // Mouse button constants
     public static final int MOUSE_BUTTON_LEFT = 1;
-    public static final int MOUSE_BUTTON_MIDDLE = 2;
-    public static final int MOUSE_BUTTON_RIGHT = 3;
+    public static final int MOUSE_BUTTON_RIGHT = 2;
+    public static final int MOUSE_BUTTON_MIDDLE = 4;
 
     public interface UsbListener {
         void onUsbConnected(String deviceName);
@@ -279,17 +279,29 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
     }
 
     /**
-     * Send mouse button press (for drag/selection): "#MD:button\n"
+     * Send mouse button press (for drag/selection): "#MD:L\n", "#MD:R\n", "#MD:M\n"
      */
     public boolean sendMouseDown(int button) {
-        return sendString("#MD:" + button + "\n");
+        if (button == MOUSE_BUTTON_RIGHT) return sendString("#MD:R\n");
+        if (button == MOUSE_BUTTON_MIDDLE) return sendString("#MD:M\n");
+        return sendString("#MD:L\n");
     }
 
     /**
-     * Send mouse button release: "#MU:button\n"
+     * Send mouse button release: "#MU:L\n", "#MU:R\n", "#MU:M\n"
      */
     public boolean sendMouseUp(int button) {
-        return sendString("#MU:" + button + "\n");
+        if (button == MOUSE_BUTTON_RIGHT) return sendString("#MU:R\n");
+        if (button == MOUSE_BUTTON_MIDDLE) return sendString("#MU:M\n");
+        if (button == 0xFF) return sendString("#MU\n");
+        return sendString("#MU:L\n");
+    }
+
+    /**
+     * Send mouse wheel scroll: "#MW:dz\n" (positive = up, negative = down)
+     */
+    public boolean sendMouseWheel(int dz) {
+        return sendString("#MW:" + dz + "\n");
     }
 
     // --- PROTOCOL PARSING (Arduino V1 and V2) ---

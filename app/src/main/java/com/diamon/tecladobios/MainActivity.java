@@ -1,6 +1,8 @@
 package com.diamon.tecladobios;
 
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
     // UI References - BIOS & D-Pad
     private Button btnKeyDel, btnKeyF2, btnKeyF11, btnKeyF12, btnKeyF10, btnKeyEsc;
     private Button btnKeyEnter, btnKeyTab, btnKeySpace, btnKeyPlus, btnKeyMinus, btnKeyCad;
+    private Button btnKeyF1, btnKeyF9, btnKeyPgUp, btnKeyPgDn;
     private ImageButton btnDpadUp, btnDpadDown, btnDpadLeft, btnDpadRight;
     private Button btnDpadCenter;
 
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
     private EditText etManualCmd;
     private Button btnSendCmd;
     private ImageButton btnClearLog;
+    private ImageButton btnCopyLog;
 
     // Controllers & State
     private UsbSerialManager usbManager;
@@ -76,8 +80,9 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
     private float lastTouchY = 0f;
     private long touchDownTime = 0L;
     private boolean isDragging = false;
+    private int maxPointerCount = 1;
     private long lastMoveSentTime = 0L;
-    private static final long MOUSE_THROTTLE_MS = 30L; // ~33 Hz throttle for 9600 baud
+    private static final long MOUSE_THROTTLE_MS = 25L; // ~40 Hz throttle for smooth responsive tracking
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +178,13 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         etManualCmd = findViewById(R.id.etManualCmd);
         btnSendCmd = findViewById(R.id.btnSendCmd);
         btnClearLog = findViewById(R.id.btnClearLog);
+        btnCopyLog = findViewById(R.id.btnCopyLog);
+
+        // Extra Function & Nav Keys
+        btnKeyF1 = findViewById(R.id.btnKeyF1);
+        btnKeyF9 = findViewById(R.id.btnKeyF9);
+        btnKeyPgUp = findViewById(R.id.btnKeyPgUp);
+        btnKeyPgDn = findViewById(R.id.btnKeyPgDn);
     }
 
     private void setupListeners() {
@@ -185,38 +197,56 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         // Touchpad Listener
         setupTouchpad();
 
-        // Mouse Buttons
+        // Mouse Buttons (Down, Up, Cancel, and Visual State)
         btnMouseLeft.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    v.setPressed(true);
                     triggerHaptic();
                     usbManager.sendMouseDown(UsbSerialManager.MOUSE_BUTTON_LEFT);
-                    updateLastAction("CLICK IZQ (DOWN)");
+                    updateLastAction("CLIC IZQ (PULSADO)");
                     return true;
                 case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.setPressed(false);
                     usbManager.sendMouseUp(UsbSerialManager.MOUSE_BUTTON_LEFT);
-                    updateLastAction("CLICK IZQ (UP)");
+                    updateLastAction("CLIC IZQ (LIBERADO)");
                     return true;
             }
             return false;
         });
 
-        btnMouseMiddle.setOnClickListener(v -> {
-            triggerHaptic();
-            usbManager.sendMouseClick(UsbSerialManager.MOUSE_BUTTON_MIDDLE);
-            updateLastAction("CLICK MEDIO");
+        btnMouseMiddle.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.setPressed(true);
+                    triggerHaptic();
+                    usbManager.sendMouseDown(UsbSerialManager.MOUSE_BUTTON_MIDDLE);
+                    updateLastAction("RUEDA / MED (PULSADO)");
+                    return true;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.setPressed(false);
+                    usbManager.sendMouseUp(UsbSerialManager.MOUSE_BUTTON_MIDDLE);
+                    updateLastAction("RUEDA / MED (LIBERADO)");
+                    return true;
+            }
+            return false;
         });
 
         btnMouseRight.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    v.setPressed(true);
                     triggerHaptic();
                     usbManager.sendMouseDown(UsbSerialManager.MOUSE_BUTTON_RIGHT);
-                    updateLastAction("CLICK DER (DOWN)");
+                    updateLastAction("CLIC DER (PULSADO)");
                     return true;
                 case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.setPressed(false);
                     usbManager.sendMouseUp(UsbSerialManager.MOUSE_BUTTON_RIGHT);
-                    updateLastAction("CLICK DER (UP)");
+                    updateLastAction("CLIC DER (LIBERADO)");
                     return true;
             }
             return false;
@@ -243,6 +273,12 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         btnDpadRight.setOnClickListener(v -> sendKeyAction("DERECHA", "r", "[RIGHT]"));
         btnDpadCenter.setOnClickListener(v -> sendKeyAction("OK / ENTER", "e", "[ENTER]"));
 
+        // Extra Functions & Page Navigation
+        if (btnKeyF1 != null) btnKeyF1.setOnClickListener(v -> sendKeyAction("F1 AYUDA", "[F1]", "[F1]"));
+        if (btnKeyF9 != null) btnKeyF9.setOnClickListener(v -> sendKeyAction("F9 DEFAULT", "[F9]", "[F9]"));
+        if (btnKeyPgUp != null) btnKeyPgUp.setOnClickListener(v -> sendKeyAction("RE PÁG", "[PGUP]", "[PGUP]"));
+        if (btnKeyPgDn != null) btnKeyPgDn.setOnClickListener(v -> sendKeyAction("AV PÁG", "[PGDN]", "[PGDN]"));
+
         // QWERTY Keys
         setupQwertyKeys();
 
@@ -268,8 +304,16 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
             logTerminalTx("?");
         });
 
-        // Terminal Actions
+        // Terminal Actions (Clear, Copy, and Long-Click to Copy)
         btnClearLog.setOnClickListener(v -> tvSerialLog.setText(""));
+        btnCopyLog.setOnClickListener(v -> copyLogToClipboard());
+
+        View.OnLongClickListener copyListener = v -> {
+            copyLogToClipboard();
+            return true;
+        };
+        tvSerialLog.setOnLongClickListener(copyListener);
+        scrollSerialLog.setOnLongClickListener(copyListener);
 
         btnSendCmd.setOnClickListener(v -> sendManualCommand());
         etManualCmd.setOnEditorActionListener((v, actionId, event) -> {
@@ -284,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
     private void setupTouchpad() {
         viewTouchpad.setOnTouchListener((v, event) -> {
             int action = event.getActionMasked();
-            int pointerCount = event.getPointerCount();
+            int count = event.getPointerCount();
             long now = System.currentTimeMillis();
 
             switch (action) {
@@ -293,6 +337,11 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
                     lastTouchY = event.getY();
                     touchDownTime = now;
                     isDragging = false;
+                    maxPointerCount = 1;
+                    return true;
+
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    maxPointerCount = Math.max(maxPointerCount, count);
                     return true;
 
                 case MotionEvent.ACTION_MOVE:
@@ -301,13 +350,30 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
                     float deltaX = curX - lastTouchX;
                     float deltaY = curY - lastTouchY;
 
-                    // Check if finger moved sufficiently to count as mouse drag
-                    if (Math.abs(deltaX) > 1.5f || Math.abs(deltaY) > 1.5f) {
+                    // If 2 fingers present: handle vertical scrolling with mouse wheel
+                    if (count >= 2) {
                         isDragging = true;
-
                         if (now - lastMoveSentTime >= MOUSE_THROTTLE_MS) {
-                            int dx = (int) (deltaX * 1.6f);
-                            int dy = (int) (deltaY * 1.6f);
+                            if (Math.abs(deltaY) > 6f) {
+                                int scrollDz = deltaY > 0 ? -1 : 1;
+                                usbManager.sendMouseWheel(scrollDz);
+                                lastMoveSentTime = now;
+                                updateLastAction("RUEDA SCROLL " + (scrollDz > 0 ? "ARRIBA" : "ABAJO"));
+                            }
+                            lastTouchX = curX;
+                            lastTouchY = curY;
+                        }
+                        return true;
+                    }
+
+                    // 1 finger: relative cursor movement
+                    if (Math.abs(deltaX) > 1.2f || Math.abs(deltaY) > 1.2f) {
+                        isDragging = true;
+                        if (now - lastMoveSentTime >= MOUSE_THROTTLE_MS) {
+                            int dx = (int) (deltaX * 1.8f);
+                            int dy = (int) (deltaY * 1.8f);
+                            dx = Math.max(-127, Math.min(127, dx));
+                            dy = Math.max(-127, Math.min(127, dy));
                             if (dx != 0 || dy != 0) {
                                 usbManager.sendMouseMove(dx, dy);
                                 lastMoveSentTime = now;
@@ -321,14 +387,13 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
                 case MotionEvent.ACTION_UP:
                     long duration = now - touchDownTime;
                     if (!isDragging && duration < 300) {
-                        // Quick tap detected -> Left Click
                         triggerHaptic();
-                        if (pointerCount == 2) {
+                        if (maxPointerCount >= 2) {
                             usbManager.sendMouseClick(UsbSerialManager.MOUSE_BUTTON_RIGHT);
-                            updateLastAction("TAP CLICK DER");
+                            updateLastAction("TAP 2 DEDOS (CLIC DER)");
                         } else {
                             usbManager.sendMouseClick(UsbSerialManager.MOUSE_BUTTON_LEFT);
-                            updateLastAction("TAP CLICK IZQ");
+                            updateLastAction("TAP 1 DEDO (CLIC IZQ)");
                         }
                     }
                     return true;
@@ -437,6 +502,22 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
 
             scrollSerialLog.post(() -> scrollSerialLog.fullScroll(View.FOCUS_DOWN));
         });
+    }
+
+    private void copyLogToClipboard() {
+        triggerHaptic();
+        String text = tvSerialLog.getText().toString();
+        if (TextUtils.isEmpty(text)) {
+            Toast.makeText(this, R.string.copy_log_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard != null) {
+            ClipData clip = ClipData.newPlainText("Registro Teclado BIOS", text);
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(this, R.string.copy_log_success, Toast.LENGTH_SHORT).show();
+            updateLastAction("COPIAR CONSOLA");
+        }
     }
 
     // --- USB SERIAL CALLBACKS ---

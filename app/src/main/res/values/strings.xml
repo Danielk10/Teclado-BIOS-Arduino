@@ -44,16 +44,23 @@
     <string name="key_enter">ENTER\nCONFIRMAR</string>
     <string name="key_tab">TAB\nCAMBIAR</string>
     <string name="key_space">ESPACIO</string>
-    <string name="key_plus">+</string>
-    <string name="key_minus">-</string>
+    <string name="key_plus">+\nSUBIR</string>
+    <string name="key_minus">-\nBAJAR</string>
     <string name="key_cad">CTRL+ALT+DEL</string>
     <string name="key_dpad_ok">OK</string>
     <string name="key_bs">⌫ BORRAR</string>
+    <string name="key_f1">F1\nAYUDA</string>
+    <string name="key_f9">F9\nDEF</string>
+    <string name="key_pgup">RE PÁG</string>
+    <string name="key_pgdn">AV PÁG</string>
 
     <!-- Diagnostics and tools -->
     <string name="btn_test">#TEST PINES</string>
     <string name="btn_reset">#RESET USB</string>
     <string name="btn_query">"? ESTADO"</string>
+    <string name="copy_log">Copiar consola</string>
+    <string name="copy_log_success">📋 ¡Registro copiado al portapapeles!</string>
+    <string name="copy_log_empty">La consola está vacía</string>
 
     <!-- Messages -->
     <string name="firmware_exporting">Exportando archivos de firmware...</string>

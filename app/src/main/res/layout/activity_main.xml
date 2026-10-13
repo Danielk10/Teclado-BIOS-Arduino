@@ -142,11 +142,11 @@
             android:stateListAnimator="@null" />
     </LinearLayout>
 
-    <!-- 2. TOP MOUSE PANEL (TOUCHPAD + 3 BOTONES: L, M, R) -->
+    <!-- 2. TOP MOUSE PANEL (ENLARGED TOUCHPAD + 3 BOTONES: L, M, R) -->
     <LinearLayout
         android:id="@+id/layoutMousePanel"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="78dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@drawable/bg_cluster_card"
@@ -155,28 +155,29 @@
 
         <!-- Mouse Title / Mode Indicator -->
         <LinearLayout
-            android:layout_width="74dp"
+            android:layout_width="76dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center"
             android:paddingHorizontal="2dp">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/ic_mouse"
                 android:contentDescription="Mouse BIOS" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RATÓN UEFI"
+                android:text="RATÓN UEFI\nHID USB"
+                android:gravity="center"
                 android:textColor="@color/bios_cyan"
                 android:textSize="9sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Touchpad Surface -->
+        <!-- Touchpad Surface (Enlarged) -->
         <FrameLayout
             android:id="@+id/viewTouchpad"
             android:layout_width="0dp"
@@ -192,14 +193,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="TOUCHPAD: Desliza cursor | Tap: Click Izq | 2 Dedos: Click Der"
-                android:textColor="@color/text_muted"
-                android:textSize="10sp" />
+                android:text="🖱 TOUCHPAD UEFI: Desliza para mover cursor · Tap = Clic Izq · 2 Dedos = Clic Der / Scroll"
+                android:textColor="@color/bios_cyan"
+                android:textSize="10sp"
+                android:textStyle="bold" />
         </FrameLayout>
 
         <!-- 3 Mouse Buttons: Left, Middle/Wheel, Right -->
         <LinearLayout
-            android:layout_width="220dp"
+            android:layout_width="235dp"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
@@ -210,8 +212,9 @@
                 android:layout_weight="1"
                 android:layout_margin="1dp"
                 android:background="@drawable/bg_mouse_button"
-                android:text="IZQ (L)"
-                android:textColor="@color/text_primary"
+                android:text="CLIC IZQ\n(L)"
+                android:lineSpacingExtra="2dp"
+                android:textColor="@color/bios_cyan"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:stateListAnimator="@null" />
@@ -223,7 +226,8 @@
                 android:layout_weight="1"
                 android:layout_margin="1dp"
                 android:background="@drawable/bg_mouse_button"
-                android:text="MED (M)"
+                android:text="RUEDA\n(M)"
+                android:lineSpacingExtra="2dp"
                 android:textColor="@color/bios_amber"
                 android:textSize="11sp"
                 android:textStyle="bold"
@@ -236,8 +240,9 @@
                 android:layout_weight="1"
                 android:layout_margin="1dp"
                 android:background="@drawable/bg_mouse_button"
-                android:text="DER (R)"
-                android:textColor="@color/text_primary"
+                android:text="CLIC DER\n(R)"
+                android:lineSpacingExtra="2dp"
+                android:textColor="@color/bios_cyan"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:stateListAnimator="@null" />
@@ -631,17 +636,49 @@
                     android:textSize="10sp" />
             </LinearLayout>
 
-            <!-- Row 4: Extra Quick Diagnostics & USB Tools -->
+            <!-- Row 4: F1 Help, F9 Defaults, Page Navigation & USB Diagnostics -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.9"
+                android:layout_weight="0.95"
                 android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnKeyF1"
+                    style="@style/KeyboardKey"
+                    android:layout_weight="1"
+                    android:text="@string/key_f1"
+                    android:textColor="@color/text_primary"
+                    android:textSize="9sp" />
+
+                <Button
+                    android:id="@+id/btnKeyF9"
+                    style="@style/KeyboardKey"
+                    android:layout_weight="1"
+                    android:text="@string/key_f9"
+                    android:textColor="@color/text_primary"
+                    android:textSize="9sp" />
+
+                <Button
+                    android:id="@+id/btnKeyPgUp"
+                    style="@style/KeyboardKey"
+                    android:layout_weight="1"
+                    android:text="@string/key_pgup"
+                    android:textColor="@color/text_primary"
+                    android:textSize="9sp" />
+
+                <Button
+                    android:id="@+id/btnKeyPgDn"
+                    style="@style/KeyboardKey"
+                    android:layout_weight="1"
+                    android:text="@string/key_pgdn"
+                    android:textColor="@color/text_primary"
+                    android:textSize="9sp" />
 
                 <Button
                     android:id="@+id/btnTestHardware"
                     style="@style/KeyboardKey"
-                    android:layout_weight="1"
+                    android:layout_weight="1.2"
                     android:text="@string/btn_test"
                     android:textColor="@color/bios_cyan"
                     android:textSize="9sp" />
@@ -649,7 +686,7 @@
                 <Button
                     android:id="@+id/btnResetUsb"
                     style="@style/KeyboardKey"
-                    android:layout_weight="1"
+                    android:layout_weight="1.1"
                     android:text="@string/btn_reset"
                     android:textColor="@color/status_red"
                     android:textSize="9sp" />
@@ -657,7 +694,7 @@
                 <Button
                     android:id="@+id/btnQueryStatus"
                     style="@style/KeyboardKey"
-                    android:layout_weight="1"
+                    android:layout_weight="1.1"
                     android:text="@string/btn_query"
                     android:textColor="@color/bios_amber"
                     android:textSize="9sp" />
@@ -669,16 +706,16 @@
     <LinearLayout
         android:id="@+id/layoutBottomTerminal"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="95dp"
         android:orientation="vertical"
         android:background="@drawable/bg_terminal"
         android:layout_marginTop="2dp"
-        android:padding="2dp">
+        android:padding="3dp">
 
-        <!-- Top sub-bar: Title, Input, Send, Clear -->
+        <!-- Top sub-bar: Title, Input, Send, Copy, Clear -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="22dp"
+            android:layout_height="24dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
@@ -712,7 +749,7 @@
             <Button
                 android:id="@+id/btnSendCmd"
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_height="22dp"
                 android:background="@drawable/bg_key_action"
                 android:text="@string/send_cmd"
                 android:textColor="@color/bios_cyan"
@@ -722,16 +759,25 @@
                 android:stateListAnimator="@null" />
 
             <ImageButton
+                android:id="@+id/btnCopyLog"
+                android:layout_width="26dp"
+                android:layout_height="22dp"
+                android:background="@drawable/bg_key_standard"
+                android:src="@drawable/ic_copy"
+                android:contentDescription="@string/copy_log"
+                android:layout_marginStart="4dp" />
+
+            <ImageButton
                 android:id="@+id/btnClearLog"
-                android:layout_width="22dp"
-                android:layout_height="20dp"
+                android:layout_width="26dp"
+                android:layout_height="22dp"
                 android:background="@drawable/bg_key_standard"
                 android:src="@drawable/ic_clear"
                 android:contentDescription="@string/clear_log"
                 android:layout_marginStart="4dp" />
         </LinearLayout>
 
-        <!-- Scrollable Log Output -->
+        <!-- Scrollable Log Output (Selectable & Long-Click to Copy) -->
         <ScrollView
             android:id="@+id/scrollSerialLog"
             android:layout_width="match_parent"
@@ -746,7 +792,8 @@
                 android:textColor="@color/terminal_rx"
                 android:textSize="9sp"
                 android:fontFamily="monospace"
-                android:text="[SISTEMA] Listo. Conecte el Arduino por USB OTG..." />
+                android:textIsSelectable="true"
+                android:text="[SISTEMA] Listo. Conecte el Arduino por USB OTG... (Mantén presionado para copiar)" />
         </ScrollView>
     </LinearLayout>
 
