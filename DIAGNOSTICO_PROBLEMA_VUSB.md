@@ -63,13 +63,14 @@ Al seleccionar una opción con submenú o lista desplegable en la BIOS (como el 
 
 ---
 
-## 3. Requisitos Eléctricos Críticos del Bus V-USB (Hardware)
+## 3. Requisitos Eléctricos Críticos del Bus V-USB (Hardware a 5V)
 
 Para que la PC detecte el teclado sin un sistema operativo presente (en frío):
 
-1. **Resistencia Pull-up obligatoria de 1.5 kΩ en D- (Cable Blanco):**
-   * El estándar USB 1.1/2.0 Low-Speed exige una resistencia de pull-up de 1.5 kΩ entre la línea D- y 3.3V (o el pin D5 del Arduino).
-   * Sin esta resistencia, la PC lee 0V constante y asume que el puerto está completamente vacío.
+1. **Resistencia Pull-up obligatoria de 1.5 kΩ en D- (Cable Blanco) hacia 5V:**
+   * La resistencia pull-up de 1.5 kΩ se conecta directamente al **Pin 5V del Arduino** (o al pin **D5** configurado por firmware en estado ALTO a 5V), **NO a la salida de 3.3V**.
+   * El diodo Zener de 3.6V conectado entre la línea de datos y GND se encarga de limitar la tensión al rango seguro de ~3.6V que exige el estándar USB Low-Speed, protegiendo el chipset de la PC y garantizando la detección por hardware.
+   * Sin esta resistencia conectada a 5V/D5, la PC lee 0V constante y asume que el puerto está completamente vacío.
 2. **Resistencias de 68 Ω en serie:**
    * Pin D2 (Verde / D+) y Pin D4 (Blanco / D-) deben llevar una resistencia de 68 Ω en serie para adaptación de impedancia y protección.
 3. **Masa Común (GND):**

@@ -72,7 +72,7 @@ flowchart LR
 
 ## 🔌 Cómo Construir el Circuito Casero (Hardware DIY)
 
-Para que un **Arduino Uno o Nano** (con microcontrolador ATmega328P a 5V) pueda emular un Teclado y Ratón USB a 3.3V directamente conectado al puerto USB de una computadora, se utiliza la técnica de emulación física **V-USB**. 
+Para que un **Arduino Uno o Nano** (con microcontrolador ATmega328P operando a 5V) pueda conectarse directamente al bus USB de una computadora manteniendo los niveles seguros de ~3.6V en las líneas de datos, se utiliza la técnica de emulación física **V-USB** con limitación mediante diodos Zener. 
 
 Puedes armar este circuito fácilmente en una protoboard o placa perforada utilizando componentes muy económicos y un cable USB reciclado.
 
