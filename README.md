@@ -160,14 +160,18 @@ El microcontrolador ATmega328P trabaja nativamente a **5V** suministrados por el
 
 ---
 
-### ⚠️ Diagnóstico Crítico: ¿Por qué la v1 se conecta en la BIOS y la v2 sólo en el Sistema?
+### 🌟 Firmware v2.0 Unificado (Definitivo): Funciona en BIOS POST y en Sistema Operativo
 
-* **Firmware v1.0 (`arduino_bios_keyboard_v1.hex`) — RECOMENDADO PARA ENTRAR A LA BIOS:**
-  * Implementa el protocolo oficial **USB HID Boot Protocol** (`SubClass = 1, Protocol = 1`) con descriptor estándar de 63 bytes y reporte de 8 bytes sin *Report IDs*.
-  * **Comportamiento:** La BIOS durante el encendido en frío (**POST**) lo reconoce **de inmediato al arrancar el equipo**. El LED se enciende en verde, la app muestra `PC: Conectada` y permite pulsar `SUPR/DEL` o `F2` al instante para acceder a la configuración de la BIOS.
-* **Firmware v2.0 (`arduino_bios_keyboard_v2.hex`) — PARA SISTEMAS OPERATIVOS Y UEFI GRÁFICA:**
-  * Al incluir emulación simultánea de ratón y teclado, utiliza descriptores compuestos con *Report IDs* (`ID 1` para teclado y `ID 2` para ratón, con `SubClass = 0, Protocol = 0`).
-  * **Comportamiento:** Las BIOS tradicionales durante el POST no tienen parser de descriptores compuestos y descartan el dispositivo en el arranque (por eso dice *PC Desconectada* al encender), pero **una vez que arranca Windows, Linux o una UEFI gráfica ("en el sistema"), el sistema operativo carga su controlador completo y funcionan perfectamente tanto el teclado como el ratón.**
+* **Firmware v2.0 (`arduino_bios_keyboard_v2.hex` / `.ino`) — ¡RECOMENDADO Y DEFINITIVO PARA TODO!**
+  * **Arquitectura Dual Boot Interface:** Integra dos interfaces USB estándar simultáneas en un único firmware:
+    * **Interfaz 0 (Teclado):** `SubClass = 1 (Boot Interface), Protocol = 1 (Keyboard)` en Endpoint 1 (0x81). Reporte nativo de 8 bytes sin Report IDs.
+    * **Interfaz 1 (Ratón):** `SubClass = 1 (Boot Interface), Protocol = 2 (Mouse)` en Endpoint 3 (0x83). Reporte nativo de 4 bytes (3 botones + rueda de scroll).
+  * **Comportamiento en la BIOS (Arranque en frío / POST):** La BIOS de cualquier placa madre detecta la Interfaz 0 como un teclado estándar de arranque por hardware. La app muestra inmediatamente **`PC: Conectada`** y puedes pulsar `SUPR/DEL`, `F2`, `F11`, `F12`, `ENTER`, `ESC` y navegar los menús sin problemas.
+  * **Comportamiento en el Sistema (Windows, Linux, macOS):** Una vez que el sistema operativo inicia, carga los controladores de ambas interfaces a la vez. El teclado sigue funcionando y el panel táctil (*touchpad*) junto a sus **tres botones virtuales (`CLIC IZQ`, `RUEDA`, `CLIC DER`)** mueven el puntero, hacen clic y hacen scroll de forma nativa.
+  * **¡Sin cambiar de firmware!** No necesitas flashear un firmware distinto para cada situación; con la versión 2.0 unificada controlas tanto la BIOS como la PC con sistema.
+
+* **Firmware v1.0 (`arduino_bios_keyboard_v1.hex` / `.ino`):**
+  * Versión clásica de solo teclado (Boot Keyboard puro sin interfaz de ratón). Útil como respaldo para placas madre extremadamente antiguas (años 1998-2005) que no admitan descriptores de configuración con más de una interfaz.
 
 ---
 
