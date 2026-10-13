@@ -220,7 +220,7 @@ void testHardwarePins() {
   } else if (valDMinus == LOW && valDPlus == HIGH) {
     Serial.println(F("-> ERROR: Cables Verde y Blanco INVERTIDOS!"));
   } else if (valDMinus == LOW && valDPlus == LOW) {
-    Serial.println(F("-> ERROR: Falta resistencia 1.5k a 3.3V en cable blanco!"));
+    Serial.println(F("-> ERROR: Falta resistencia 1.5k a 5V en cable blanco!"));
   }
 
   usbInit();

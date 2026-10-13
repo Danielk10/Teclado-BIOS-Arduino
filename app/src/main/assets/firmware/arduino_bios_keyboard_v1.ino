@@ -115,7 +115,7 @@ void testHardwarePins() {
   } else if (valDMinus == LOW && valDPlus == HIGH) {
     Serial.println(F("-> ERROR: Cables Verde y Blanco INVERTIDOS!"));
   } else if (valDMinus == LOW && valDPlus == LOW) {
-    Serial.println(F("-> ERROR: Falta resistencia 1.5k a 3.3V en cable blanco!"));
+    Serial.println(F("-> ERROR: Falta resistencia 1.5k a 5V en cable blanco!"));
   }
 
   usbInit();
@@ -410,7 +410,24 @@ void loop() {
         // Convertir a mayúsculas
         for (uint8_t i = 0; cmdBuffer[i]; i++) cmdBuffer[i] = toupper(cmdBuffer[i]);
 
-        if (strcmp(cmdBuffer, "BIOS") == 0 || strcmp(cmdBuffer, "MODO2") == 0) {
+        // Protocolo de sincronización con la App Android
+        if (strcmp(cmdBuffer, "PING") == 0 || strcmp(cmdBuffer, "SYNC") == 0) {
+          Serial.print(F("#PONG:BIOS_KEYBOARD_V1:LINK="));
+          Serial.print(UsbKeyboard.isConnectedToHost() ? '1' : '0');
+          Serial.print(F(",PKTS="));
+          Serial.println(UsbKeyboard.getPacketCount());
+        } else if (strcmp(cmdBuffer, "STATUS") == 0) {
+          if (UsbKeyboard.isConnectedToHost()) {
+            Serial.print(F("#STAT:LINK=1,ADDR="));
+            Serial.print(UsbKeyboard.getUsbAddress());
+            Serial.print(F(",CFG="));
+            Serial.print(UsbKeyboard.getUsbConfiguration());
+            Serial.print(F(",PKTS="));
+            Serial.println(UsbKeyboard.getPacketCount());
+          } else {
+            Serial.println(F("#STAT:LINK=0"));
+          }
+        } else if (strcmp(cmdBuffer, "BIOS") == 0 || strcmp(cmdBuffer, "MODO2") == 0) {
           currentMode = MODE_QUICK_BIOS;
           Serial.println(F("\n-> MODO CAMBIADO: MODO BIOS RAPIDO (s=Supr, u=Arriba, etc.)"));
         } else if (strcmp(cmdBuffer, "TEXTO") == 0 || strcmp(cmdBuffer, "MODO1") == 0) {

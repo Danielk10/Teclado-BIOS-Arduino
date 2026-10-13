@@ -97,18 +97,18 @@ Al cortar y pelar el cable USB que irá hacia la PC, encontrarás 4 hilos:
 ```
 [CONECTOR USB TIPO-A (HACIA PC)]
   ├── ROJO   : +5V VBUS  ───────> ⚠️ ¡NO CONECTAR! Cortar y aislar con cinta térmica/aislante.
-  ├── BLANCO : D- (Datos -) ────> Conectar a Pin D4 (a través de resistencia de 68Ω) + Pull-up 1.5k a 3.3V.
+  ├── BLANCO : D- (Datos -) ────> Conectar a Pin D4 (a través de resistencia de 68Ω) + Pull-up 1.5k a 5V (o D5).
   ├── VERDE  : D+ (Datos +) ────> Conectar a Pin D2 (a través de resistencia de 68Ω).
   └── NEGRO  : GND (Masa)   ────> Conectar al pin GND del Arduino.
 ```
 
 > [!CAUTION]
-> **¡PELIGRO DE CHOQUE ELÉCTRICO CON EL CABLE ROJO (+5V)!**
+> **¡PELIGRO DE CHOQUE ELÉCTRICO CON EL CABLE ROJO (+5V DE LA PC)!**
 > El Arduino ya recibe alimentación limpia de 5V desde tu teléfono móvil mediante el cable USB-OTG. **NUNCA conectes el cable rojo (+5V de la PC) al Arduino**. Si los 5V de la PC chocan con los 5V del teléfono, se producirán caídas de tensión, reinicios continuos del microcontrolador o disparos de la protección térmica del puerto OTG del móvil.
 
 ---
 
-### 📐 Diagrama Esquemático del Circuito
+### 📐 Diagrama Esquemático del Circuito (Alimentado con 5V de Arduino)
 
 ```
                          ARDUINO UNO / NANO (ATmega328P)
@@ -116,7 +116,7 @@ Al cortar y pelar el cable USB que irá hacia la PC, encontrarás 4 hilos:
                         |                               |
 (Teléfono Android) <==> | Puerto USB-B / Mini-USB (OTG) | (Alimentación 5V + Datos Serie)
                         |                               |
-                        |                    Pin 3.3V   | ────+
+                        |                    Pin 5V     | ────+ (O Pin D5 configurado a 5V)
                         |                               |     |
                         |                               |    [1.5 kΩ] Resistencia Pull-Up
                         |                               |     |
@@ -137,20 +137,14 @@ CABLE NEGRO (GND) ────────────────────�
 
 ---
 
-### 🔬 Opciones para Limitar el Voltaje a 3.3V / 3.6V
+### 🔬 Funcionamiento Eléctrico a 5V con Diodos Zener
 
-El microcontrolador ATmega328P trabaja a **5V**, pero el bus USB requiere que las líneas de datos operen entre **2.8V y 3.6V**. Superar este voltaje puede hacer que el chipset de la laptop desconecte el puerto por protección. Puedes usar cualquiera de estas dos opciones:
-
-#### Opción A (Recomendada): Diodos Zener de 3.6V (o 3.3V) a GND
-* Coloca el **cátodo** (el lado con la franja negra o marcada) conectado a la línea de datos (D2 o D4).
-* Coloca el **ánodo** conectado a la línea GND del Arduino.
-* *Función:* Recorta cualquier pico superior a 3.6V hacia masa de manera limpia y segura.
-
-#### Opción B (Alternativa): Diodos de Cristal de Alta Velocidad (1N4148 / Schottky)
-* Si no dispones de diodos zener de 3.6V en tu taller, puedes usar diodos de conmutación rápida de silicio/cristal (como el **1N4148**) o diodos Schottky de pequeña señal colocados en serie o en configuración de fijación (clamping) hacia la línea de 3.3V del Arduino:
-  * Ánodo a la línea de datos (D2 / D4).
-  * Cátodo conectado al pin de **3.3V** del Arduino.
-  * *Función:* Cuando la tensión en la línea supera 3.3V + 0.3V (aprox. 3.6V), el diodo conduce y drena el exceso de voltaje al riel de 3.3V.
+El microcontrolador ATmega328P trabaja nativamente a **5V** suministrados por el teléfono vía OTG:
+1. **Resistencia Pull-up de 1.5 kΩ conectada a 5V:** La resistencia se conecta directamente al **Pin 5V** del Arduino (o al **Pin D5**, el cual el firmware polariza automáticamente en estado ALTO a 5V mediante software). Esto polariza la línea D- (cable blanco) para que la computadora detecte la presencia de un dispositivo *USB Low-Speed*. **No es necesario usar el pin de 3.3V.**
+2. **Limitación de Voltaje con Diodos Zener de 3.6V:**
+   * Al colocar un diodo zener de 3.6V entre la línea de datos y GND (con el **cátodo** en la señal y el **ánodo** a masa), la tensión máxima que llega a la PC se recorta de forma segura a exactamente **~3.6V**, protegiendo el chipset de la placa madre y cumpliendo a la perfección los niveles lógicos del bus USB.
+3. **Alternativa con Diodos de Cristal de Alta Velocidad (1N4148 / Schottky):**
+   * Si no dispones de diodos zener de 3.6V, puedes utilizar diodos rápidos de señal (1N4148) o diodos Schottky conectados en configuración de recorte o en serie para garantizar una caída de tensión adecuada hacia el bus de datos.
 
 ---
 
@@ -160,9 +154,20 @@ El microcontrolador ATmega328P trabaja a **5V**, pero el bus USB requiere que la
 |---|---|---|---|
 | **Verde (D+)** | Resistencia de **45 Ω - 68 Ω** en serie + Zener 3.6V a GND | **Pin D2** | Señal D+ (Dispara la interrupción externa `INT0` de V-USB). |
 | **Blanco (D-)** | Resistencia de **45 Ω - 68 Ω** en serie + Zener 3.6V a GND | **Pin D4** | Señal D- (Línea de datos y reinicio eléctrico de bus SE0). |
-| **Blanco (D-)** | Resistencia Pull-up de **1.5 kΩ** conectada al riel | **Pin 3.3V** *(o Pin D5)* | **Obligatorio:** Notifica al host que es un dispositivo *Low-Speed*. |
+| **Blanco (D-)** | Resistencia Pull-up de **1.5 kΩ** conectada a **5V** | **Pin 5V** *(o Pin D5)* | **Obligatorio:** Polarización a 5V recortada por Zener a 3.6V (*USB Low-Speed*). |
 | **Negro (GND)** | Conexión directa | **Pin GND** | Referencia de masa común obligatoria entre PC y Arduino. |
-| **Rojo (+5V)** | **NINGUNO (CORTAR/AISLAR)** | **NO CONECTAR** | Evita cortocircuitos con la alimentación del teléfono. |
+| **Rojo (+5V)** | **NINGUNO (CORTAR/AISLAR)** | **NO CONECTAR** | Evita cortocircuitos con la alimentación del teléfono móvil. |
+
+---
+
+### ⚠️ Diagnóstico Crítico: ¿Por qué la v1 se conecta en la BIOS y la v2 sólo en el Sistema?
+
+* **Firmware v1.0 (`arduino_bios_keyboard_v1.hex`) — RECOMENDADO PARA ENTRAR A LA BIOS:**
+  * Implementa el protocolo oficial **USB HID Boot Protocol** (`SubClass = 1, Protocol = 1`) con descriptor estándar de 63 bytes y reporte de 8 bytes sin *Report IDs*.
+  * **Comportamiento:** La BIOS durante el encendido en frío (**POST**) lo reconoce **de inmediato al arrancar el equipo**. El LED se enciende en verde, la app muestra `PC: Conectada` y permite pulsar `SUPR/DEL` o `F2` al instante para acceder a la configuración de la BIOS.
+* **Firmware v2.0 (`arduino_bios_keyboard_v2.hex`) — PARA SISTEMAS OPERATIVOS Y UEFI GRÁFICA:**
+  * Al incluir emulación simultánea de ratón y teclado, utiliza descriptores compuestos con *Report IDs* (`ID 1` para teclado y `ID 2` para ratón, con `SubClass = 0, Protocol = 0`).
+  * **Comportamiento:** Las BIOS tradicionales durante el POST no tienen parser de descriptores compuestos y descartan el dispositivo en el arranque (por eso dice *PC Desconectada* al encender), pero **una vez que arranca Windows, Linux o una UEFI gráfica ("en el sistema"), el sistema operativo carga su controlador completo y funcionan perfectamente tanto el teclado como el ratón.**
 
 ---
 
@@ -170,11 +175,11 @@ El microcontrolador ATmega328P trabaja a **5V**, pero el bus USB requiere que la
 
 Una vez ensamblado el circuito, antes de conectar la PC puedes comprobar que las resistencias y cables estén perfectos:
 1. Conecta el Arduino al teléfono y abre la app **Teclado BIOS Arduino**.
-2. Presiona el botón **`#TEST PINES`** (o envía `t` en la consola).
+2. Presiona el botón **`#TEST PINES`** (o envía `#TEST` en la consola).
 3. El microcontrolador medirá el voltaje de las líneas en reposo y responderá:
-   * **`ESTADO ELECTRICO: CORRECTO`** $\to$ Cable blanco en alto (~3.3V) y verde en bajo (0V). ¡Listo para conectar a la PC!
+   * **`ESTADO ELECTRICO: CORRECTO`** $\to$ Cable blanco en alto (~3.6V por zener) y verde en bajo (0V). ¡Listo para conectar a la PC!
    * **`ERROR: CABLES INVERTIDOS`** $\to$ El cable verde y blanco están al revés (intercambia D2 y D4).
-   * **`ERROR: FALTA RESISTENCIA PULL-UP 1.5K`** $\to$ La línea D- está en 0V. Revisa la resistencia hacia 3.3V.
+   * **`ERROR: FALTA RESISTENCIA PULL-UP 1.5K`** $\to$ La línea D- está en 0V. Revisa la resistencia de 1.5kΩ hacia el pin 5V (o D5).
 
 
 ---

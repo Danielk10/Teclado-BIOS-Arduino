@@ -9,22 +9,22 @@ compatible con cualquier BIOS / UEFI, Menú de Arranque (Boot Menu), GRUB,
 Windows, Linux y macOS.
 
 ARCHIVOS INCLUIDOS:
-1. arduino_bios_keyboard_v2.ino: Firmware versión 2 con soporte para Teclado
-   BIOS, modo texto libre y Ratón USB (Touchpad UEFI con clicks L, M, R).
-2. arduino_bios_keyboard_v1.ino / .hex: Firmware versión 1 estable de teclado
-   completo y ráfaga de teclas BIOS (DEL, F2, F11, F12, F10).
-3. arduino_bios_keyboard_v0.ino / .hex: Firmware versión inicial de diagnóstico.
+1. arduino_bios_keyboard_v1.hex / .ino: (¡RECOMENDADO PARA ENTRAR A LA BIOS!)
+   Firmware versión 1 puro USB HID Boot Keyboard. Es reconocido de inmediato
+   por la BIOS / UEFI en el encendido en frío (POST) para pulsar SUPR/DEL, F2, F10, F12.
+2. arduino_bios_keyboard_v2.hex / .ino: Firmware versión 2 compuesto (Teclado + Ratón
+   UEFI). Para sistemas operativos (Windows, Linux, macOS) o UEFIs gráficas.
+3. arduino_bios_keyboard_v0.hex / .ino: Firmware versión inicial de diagnóstico.
 
-CIRCUITO DE CONEXIÓN USB DEL ARDUINO UNO A LA PC:
-El Arduino Uno utiliza la librería V-USB para comunicarse directamente como
-dispositivo HID con la PC anfitriona a través de sus pines digitales:
+CIRCUITO DE CONEXIÓN USB DEL ARDUINO UNO A LA PC (ALIMENTADO A 5V):
+El Arduino Uno se alimenta a 5V desde el teléfono vía cable OTG:
 
-- Pin D2  del Arduino -> Resistencia 68 ohmios -> Cable D+ (Verde del USB PC)
-- Pin D4  del Arduino -> Resistencia 68 ohmios -> Cable D- (Blanco del USB PC)
-- Resistencia 1.5k ohmios entre Cable D- (Blanco) y 3.3V (o Pin D5 configurado en HIGH)
-- Diodos Zener de 3.6V (o 3.3V) entre D+ y GND, y entre D- y GND (para fijar nivel lógico a 3.3V)
+- Pin D2  del Arduino -> Resistencia 45-68 ohmios -> Cable D+ (Verde del USB PC)
+- Pin D4  del Arduino -> Resistencia 45-68 ohmios -> Cable D- (Blanco del USB PC)
+- Resistencia 1.5k ohmios entre Cable D- (Blanco) y PIN 5V del Arduino (o Pin D5 configurado en HIGH)
+- Diodos Zener de 3.6V (o cristal alta velocidad) entre D+ y GND, y entre D- y GND (recortan a 3.6V)
 - Pin GND del Arduino -> Cable GND (Negro del USB PC)
-- Pin 5V  del Arduino -> Cable VBUS 5V (Rojo del USB PC) - Opcional si se alimenta por USB
+- Cable VBUS 5V (Rojo del USB PC) -> ¡NO CONECTAR! (Cortar y aislar para evitar conflicto con el móvil)
 
 CONEXIÓN DEL ARDUINO AL TELÉFONO ANDROID:
 - Conecte el puerto USB estándar del Arduino al teléfono Android mediante un cable/adaptador USB OTG.

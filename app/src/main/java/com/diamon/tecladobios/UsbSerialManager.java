@@ -333,6 +333,7 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
         // Check for positive PC link signals
         if (line.contains("¡LA PC HA RECONOCIDO EL TECLADO!")
                 || line.contains("PC COMUNICADA: SI")
+                || line.contains("#PONG:BIOS_KEYBOARD_V1:LINK=1")
                 || line.contains("#PONG:BIOS_KEYBOARD_V2:LINK=1")
                 || line.contains("#STAT:LINK=1")
                 || line.contains("LINK=1")) {
@@ -344,6 +345,7 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
         // Check for disconnected PC signals
         else if (line.contains("LA PC SE HA DESCONECTADO")
                 || line.contains("PC COMUNICADA: NO")
+                || line.contains("#PONG:BIOS_KEYBOARD_V1:LINK=0")
                 || line.contains("#PONG:BIOS_KEYBOARD_V2:LINK=0")
                 || line.contains("#STAT:LINK=0")
                 || line.contains("LINK=0")) {
