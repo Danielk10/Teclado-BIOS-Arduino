@@ -185,7 +185,7 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
             serialPort.setRTS(true);
 
             ioManager = new SerialInputOutputManager(serialPort, this);
-            Executors.newSingleThreadExecutor().submit(ioManager);
+            ioManager.start();
 
             isConnected = true;
             String devName = driver.getClass().getSimpleName().replace("SerialDriver", "");

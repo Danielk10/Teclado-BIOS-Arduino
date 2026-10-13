@@ -26,7 +26,6 @@ public class FirmwareExporter {
 
     private static final String TAG = "FirmwareExporter";
     private static final String ASSETS_DIR = "firmware";
-    private static final String SUBDIR_NAME = "TecladoBIOS_Firmware";
 
     public interface ExportCallback {
         void onSuccess(String targetDirectory, List<String> exportedFiles);
@@ -48,13 +47,13 @@ public class FirmwareExporter {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     // Use MediaStore.Downloads for Android 10+ (Scoped Storage compliant)
                     ContentResolver resolver = context.getContentResolver();
-                    targetPathDesc = "Download/" + SUBDIR_NAME;
+                    targetPathDesc = "Download";
 
                     for (String fileName : assetFiles) {
                         Uri collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
                         ContentValues values = new ContentValues();
                         values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
-                        values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/" + SUBDIR_NAME);
+                        values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
                         values.put(MediaStore.Downloads.IS_PENDING, 1);
 
                         // Determine MIME type
@@ -87,14 +86,13 @@ public class FirmwareExporter {
                 } else {
                     // Legacy File API for Android 9 and lower
                     File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                    File targetDir = new File(downloadDir, SUBDIR_NAME);
-                    if (!targetDir.exists()) {
-                        targetDir.mkdirs();
+                    if (!downloadDir.exists()) {
+                        downloadDir.mkdirs();
                     }
-                    targetPathDesc = targetDir.getAbsolutePath();
+                    targetPathDesc = downloadDir.getAbsolutePath();
 
                     for (String fileName : assetFiles) {
-                        File destFile = new File(targetDir, fileName);
+                        File destFile = new File(downloadDir, fileName);
                         try (InputStream is = context.getAssets().open(ASSETS_DIR + "/" + fileName);
                              OutputStream os = new FileOutputStream(destFile)) {
                             byte[] buffer = new byte[8192];

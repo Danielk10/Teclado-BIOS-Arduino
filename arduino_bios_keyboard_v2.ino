@@ -1,15 +1,29 @@
 /*
- * Arduino UNO USB HID Keyboard - VERSION 1.0 (Teclado Completo + BIOS)
- * Compatible con BIOS / UEFI, Boot Menu, GRUB, Windows, Linux y Shell.
+ * Arduino UNO USB HID Composite Keyboard + Mouse - VERSION 2.0
+ * Compatible con BIOS / UEFI, Boot Menu, GRUB, Windows, Linux, Android y Shell.
  *
- * Características:
- * 1. MODO TEXTO (Por defecto): Escribe cualquier texto carácter por carácter
- *    (a-z, A-Z con Shift automático, 0-9, y todos los símbolos).
- * 2. COMANDOS DE TECLAS ESPECIALES: Usa etiquetas como [F1]-[F12], [UP], [DOWN],
- *    [LEFT], [RIGHT], [ENTER], [ESC], [DEL], [BS], [TAB], [SPACE], [CAD], etc.
- * 3. MODO BIOS RAPIDO: Escribe '#BIOS' para activar el modo de 1 tecla (s=Supr,
- *    u=Arriba, d=Abajo, e=Enter, 2=F2, f=F11, etc.).
- * 4. Diagnóstico de hardware en tiempo real con '#' o '?'.
+ * Características Version 2.0:
+ * 1. Soporte Compuesto USB HID Teclado + Ratón (Report ID 1: Keyboard, Report ID 2: Mouse).
+ * 2. Emulación completa de Ratón vía Serial:
+ *    - #M:dx,dy  -> Movimiento relativo del ratón
+ *    - #ML       -> Clic izquierdo (Left Click) o #MB:1
+ *    - #MR       -> Clic derecho (Right Click) o #MB:2
+ *    - #MM       -> Clic central (Middle Click) o #MB:4
+ *    - #MD:btn   -> Botón presionado (arrastre / drag) (btn = 1|2|4 o L|R|M)
+ *    - #MU:btn   -> Botón liberado (drop) (btn = 1|2|4 o L|R|M o vacío para todos)
+ *    - #MW:dz    -> Rueda de desplazamiento (scroll)
+ * 3. Protocolo de sincronización con App Android (OTG):
+ *    - #PING / #SYNC -> Responde '#PONG:BIOS_KEYBOARD_V2:LINK=[0|1],PKTS=N'
+ *    - #STATUS       -> Responde '#STAT:LINK=1,ADDR=X,CFG=Y,PKTS=Z' o '#STAT:LINK=0'
+ * 4. Antirrebote de hardware/software (Debounce) en ENTER y teclas de navegación:
+ *    - Evita que menús desplegables (spinners) de BIOS se abran y cierren accidentalmente.
+ *    - Filtro de 80ms para secuencias \r\n y pulsaciones repetidas rápidas.
+ *    - Temporizador por hardware Timer1 a 62.5 kHz sin interrupciones para mantener
+ *      estabilidad absoluta en el bus USB bit-banging (V-USB).
+ * 5. 100% retrocompatible con Version 1.0:
+ *    - Modo BIOS rápido (s=Supr, u=Arriba, d=Abajo, e=Enter, x=Esc, 2=F2, 0=F10, etc.)
+ *    - Modo Texto completo y etiquetas especiales entre corchetes [F1]-[F12], [UP], [CAD].
+ *    - Comandos de diagnóstico #TEXTO, #BIOS, #AYUDA, #TEST, #RESET y '?'.
  */
 
 #include "UsbKeyboard.h"
@@ -38,17 +52,108 @@ enum KeyboardMode {
 
 KeyboardMode currentMode = MODE_QUICK_BIOS;
 
+// ---------------------------------------------------------------------------
+// Temporizador preciso sin interrupciones (Timer1 a prescaler 256 = 62.5 kHz)
+// Mantiene exactitud de milisegundos sin generar interrupciones que interfieran
+// con la sincronización crítica de V-USB.
+// ---------------------------------------------------------------------------
+static uint16_t lastTcnt1 = 0;
+static unsigned long totalMs = 0;
+static uint16_t tickRemainder = 0;
+
+void initDebounceTimer() {
+  TCCR1A = 0;
+  TCCR1B = (1 << CS12); // Prescaler 256 -> 62500 ticks/seg (62.5 ticks/ms)
+  TCNT1 = 0;
+  lastTcnt1 = 0;
+  totalMs = 0;
+  tickRemainder = 0;
+}
+
+unsigned long getMillis() {
+  uint16_t nowTcnt = TCNT1;
+  uint16_t delta = nowTcnt - lastTcnt1;
+  lastTcnt1 = nowTcnt;
+  tickRemainder += delta;
+  if (tickRemainder >= 125) {
+    uint16_t ms2 = tickRemainder / 125;
+    totalMs += (uint32_t)ms2 * 2;
+    tickRemainder %= 125;
+  }
+  return totalMs + (tickRemainder >= 63 ? 1 : 0);
+}
+
+// ---------------------------------------------------------------------------
+// Filtro antirrebote (Debounce) para ENTER y teclas de navegación
+// ---------------------------------------------------------------------------
+#define DEBOUNCE_INTERVAL_MS 80
+
+bool isNavOrEnterKey(uint8_t keycode) {
+  switch (keycode) {
+    case KEY_ENTER:
+    case KEY_UP_ARROW:
+    case KEY_DOWN_ARROW:
+    case KEY_LEFT_ARROW:
+    case KEY_RIGHT_ARROW:
+    case KEY_ESC:
+    case KEY_F10:
+    case HID_KEY_TAB:
+    case KEY_HOME:
+    case KEY_END:
+    case KEY_PAGEUP:
+    case KEY_PAGEDOWN:
+    case KEY_SPACE:
+    case HID_KEY_EQUAL:
+    case HID_KEY_MINUS:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool shouldDebounce(uint8_t keycode) {
+  if (!isNavOrEnterKey(keycode)) {
+    return false; // Caracteres alfanuméricos no se filtran (permite 'ee', '00', etc.)
+  }
+  static unsigned long lastNavKeyTime = 0;
+  static uint8_t lastNavKey = 0;
+  unsigned long now = getMillis();
+
+  if (keycode == lastNavKey && (now - lastNavKeyTime < DEBOUNCE_INTERVAL_MS)) {
+    return true; // Rebote detectado -> descartar pulsación repetida
+  }
+  lastNavKey = keycode;
+  lastNavKeyTime = now;
+  return false;
+}
+
+// ---------------------------------------------------------------------------
+// Ayuda e Información de Diagnóstico
+// ---------------------------------------------------------------------------
 void printHelp() {
-  Serial.println(F("\n================ AYUDA TECLADO V1.0 ================"));
+  Serial.println(F("\n================ AYUDA TECLADO + RATON V2.0 ================"));
   Serial.println(F("MODO ACTUAL: "));
   Serial.println(currentMode == MODE_FULL_TEXT ? F("-> MODO TEXTO COMPLETO") : F("-> MODO BIOS RAPIDO"));
-  Serial.println(F("\n[COMANDOS DE CAMBIO DE MODO]"));
-  Serial.println(F("  #TEXTO   : Activa modo texto (escribe cualquier caracter)"));
-  Serial.println(F("  #BIOS    : Activa modo BIOS rapido (1 tecla directa)"));
-  Serial.println(F("  #AYUDA   : Muestra este menu"));
-  Serial.println(F("  #TEST    : Ejecuta el test electrico de pines USB"));
-  Serial.println(F("  #RESET   : Fuerza reinicio del bus USB SE0"));
-  Serial.println(F("  ?        : Estado de conexion con la PC"));
+  
+  Serial.println(F("\n[COMANDOS DE RATON (MOUSE HID)]"));
+  Serial.println(F("  #M:dx,dy      : Mover raton relativo (ej. #M:20,-10)"));
+  Serial.println(F("  #ML           : Clic izquierdo (Left Click)"));
+  Serial.println(F("  #MR           : Clic derecho (Right Click)"));
+  Serial.println(F("  #MM           : Clic central (Middle Click)"));
+  Serial.println(F("  #MB:n         : Clic en boton n (1=Izq, 2=Der, 4=Medio)"));
+  Serial.println(F("  #MD:btn       : Pulsar y mantener boton (Arrastrar / Drag)"));
+  Serial.println(F("  #MU:btn       : Soltar boton (Drop)"));
+  Serial.println(F("  #MW:dz        : Rueda de desplazamiento (Scroll dz)"));
+
+  Serial.println(F("\n[COMANDOS DE PROTOCOLO Y CONTROL]"));
+  Serial.println(F("  #PING / #SYNC : Sincronizacion con App (#PONG:BIOS_KEYBOARD_V2:LINK=...)"));
+  Serial.println(F("  #STATUS       : Estado maquina (#STAT:LINK=1,ADDR=...,CFG=...,PKTS=...)"));
+  Serial.println(F("  #TEXTO        : Activa modo texto (escribe cualquier caracter)"));
+  Serial.println(F("  #BIOS         : Activa modo BIOS rapido (1 tecla directa)"));
+  Serial.println(F("  #AYUDA        : Muestra este menu"));
+  Serial.println(F("  #TEST         : Ejecuta el test electrico de pines USB"));
+  Serial.println(F("  #RESET        : Fuerza reinicio del bus USB SE0"));
+  Serial.println(F("  ?             : Estado de conexion con la PC"));
   
   Serial.println(F("\n[TECLAS ESPECIALES - Escribe entre corchetes]"));
   Serial.println(F("  Funciones  : [F1] hasta [F12]"));
@@ -60,11 +165,11 @@ void printHelp() {
   
   if (currentMode == MODE_QUICK_BIOS) {
     Serial.println(F("\n[TECLAS DIRECTAS EN MODO BIOS]"));
-    Serial.println(F("  s=SUPR | 2=F2 | f=F11 | b=F12 | 0=F10"));
+    Serial.println(F("  s=SUPR (burst) | 2=F2 (burst) | f=F11 (burst) | b=F12 (burst)"));
     Serial.println(F("  u=Arriba | d=Abajo | l=Izquierda | r=Derecha"));
-    Serial.println(F("  e=ENTER | x=ESC | Espacio=Espacio"));
+    Serial.println(F("  e=ENTER | x=ESC | 0=F10 | +=Mas | -=Menos | Espacio=Espacio"));
   }
-  Serial.println(F("====================================================\n"));
+  Serial.println(F("============================================================\n"));
 }
 
 void printStatus() {
@@ -81,7 +186,7 @@ void printStatus() {
     Serial.print(addr);
     Serial.print(F(" | Paquetes: "));
     Serial.println(pkts);
-    Serial.println(F("-> Teclado listo y operativo."));
+    Serial.println(F("-> Teclado + Raton listos y operativos."));
   } else {
     Serial.println(F("PC COMUNICADA: NO (Sin comunicacion USB)"));
     Serial.println(F("-> Envia '#TEST' para probar el cable USB."));
@@ -133,8 +238,15 @@ void reconnectUSB() {
   printStatus();
 }
 
-// Envío con ráfagas y confirmación de entrega
+// ---------------------------------------------------------------------------
+// Envío de teclas USB HID con ráfagas o pulso único antirrebote
+// ---------------------------------------------------------------------------
 bool sendKeyBurst(uint8_t keycode, uint8_t repeats, const char* name = NULL, uint8_t modifiers = 0) {
+  // Para teclas de navegación o ENTER de 1 pulsación, aplicar antirrebote
+  if (repeats == 1 && shouldDebounce(keycode)) {
+    return true; // Rebote ignorado silenciosamente
+  }
+
   bool anyDelivered = false;
 
   for (uint8_t r = 0; r < repeats; r++) {
@@ -168,7 +280,9 @@ bool sendKeyBurst(uint8_t keycode, uint8_t repeats, const char* name = NULL, uin
   return anyDelivered;
 }
 
+// ---------------------------------------------------------------------------
 // Envío de carácter individual en Modo Texto
+// ---------------------------------------------------------------------------
 bool sendSingleChar(char c) {
   uint8_t keycode = 0;
   uint8_t mod = 0;
@@ -185,12 +299,9 @@ bool sendSingleChar(char c) {
   } else if (c == ' ') {
     keycode = KEY_SPACE;
   } else if (c == '\n' || c == '\r') {
-    static unsigned long lastEnterMs = 0;
-    unsigned long now = millis();
-    if (now - lastEnterMs < 80) {
+    if (shouldDebounce(KEY_ENTER)) {
       return true; // Evitar doble Enter si la terminal envía \r\n
     }
-    lastEnterMs = now;
     keycode = KEY_ENTER;
   } else if (c == '\t') {
     keycode = HID_KEY_TAB;
@@ -248,9 +359,10 @@ bool sendSingleChar(char c) {
   return false;
 }
 
+// ---------------------------------------------------------------------------
 // Procesa etiquetas de teclas especiales entre corchetes: ej. [F2], [DEL], [UP]
+// ---------------------------------------------------------------------------
 bool processSpecialTag(const char* tag) {
-  // Ignorar mayúsculas/minúsculas haciendo copia local en mayúsculas
   char upper[24];
   uint8_t len = 0;
   while (tag[len] != '\0' && len < 23) {
@@ -273,17 +385,17 @@ bool processSpecialTag(const char* tag) {
   if (strcmp(upper, "F11") == 0) return sendKeyBurst(KEY_F11, 6, "F11 (BURST)");
   if (strcmp(upper, "F12") == 0) return sendKeyBurst(KEY_F12, 6, "F12 (BURST)");
 
-  // Flechas de dirección (1 pulsación por comando para no saltar de más)
+  // Flechas de dirección (1 pulsación debounced)
   if (strcmp(upper, "UP") == 0 || strcmp(upper, "ARRIBA") == 0)
     return sendKeyBurst(KEY_UP_ARROW, 1, "ARRIBA");
   if (strcmp(upper, "DOWN") == 0 || strcmp(upper, "ABAJO") == 0)
     return sendKeyBurst(KEY_DOWN_ARROW, 1, "ABAJO");
-  if (strcmp(upper, "LEFT") == 0 || strcmp(upper, "IZQUIERDA") == 0)
+  if (strcmp(upper, "LEFT") == 0 || strcmp(upper, "IZQUIERDA") == 0 || strcmp(upper, "IZQ") == 0)
     return sendKeyBurst(KEY_LEFT_ARROW, 1, "IZQUIERDA");
-  if (strcmp(upper, "RIGHT") == 0 || strcmp(upper, "DERECHA") == 0)
+  if (strcmp(upper, "RIGHT") == 0 || strcmp(upper, "DERECHA") == 0 || strcmp(upper, "DER") == 0)
     return sendKeyBurst(KEY_RIGHT_ARROW, 1, "DERECHA");
 
-  // Control y edición (1 pulsación para que ENTER no abra y cierre spinners)
+  // Control y edición (1 pulsación debounced)
   if (strcmp(upper, "DEL") == 0 || strcmp(upper, "SUPR") == 0 || strcmp(upper, "DELETE") == 0)
     return sendKeyBurst(KEY_DELETE, 6, "SUPR (BURST)");
   if (strcmp(upper, "ENTER") == 0 || strcmp(upper, "ENTRAR") == 0)
@@ -340,16 +452,22 @@ bool processSpecialTag(const char* tag) {
   return true;
 }
 
+// ---------------------------------------------------------------------------
+// Setup
+// ---------------------------------------------------------------------------
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
 
-  // Pin 5 en alto por si se conecta el pull-up allí
+  // Pin 5 en alto por si se conecta la resistencia de pull-up allí
   pinMode(5, OUTPUT);
   digitalWrite(5, HIGH);
 
-  // Desactivar interrupción Timer0 para estabilidad en timing USB
+  // Desactivar interrupción Timer0 para estabilidad en timing USB bit-banging
   TIMSK0 &= ~(1 << TOIE0);
+
+  // Inicializar temporizador de hardware Timer1 para debounce sin interrupciones
+  initDebounceTimer();
 
   Serial.begin(9600);
 
@@ -361,13 +479,16 @@ void setup() {
     delayMicroseconds(1000);
   }
 
-  Serial.println(F("\n==================================================="));
-  Serial.println(F("ARDUINO USB KEYBOARD v1.0 (TECLADO COMPLETO + BIOS)"));
-  Serial.println(F("==================================================="));
+  Serial.println(F("\n==========================================================="));
+  Serial.println(F("ARDUINO USB KEYBOARD + MOUSE v2.0 (TECLADO + RATON + BIOS)"));
+  Serial.println(F("==========================================================="));
   printStatus();
   printHelp();
 }
 
+// ---------------------------------------------------------------------------
+// Loop Principal
+// ---------------------------------------------------------------------------
 void loop() {
   UsbKeyboard.update();
 
@@ -375,7 +496,7 @@ void loop() {
   static bool lastConnected = false;
   bool currentConnected = UsbKeyboard.isConnectedToHost();
   if (currentConnected && !lastConnected) {
-    Serial.println(F("\n*** [EXITO] ¡LA PC HA RECONOCIDO EL TECLADO! ***\n"));
+    Serial.println(F("\n*** [EXITO] ¡LA PC HA RECONOCIDO EL TECLADO Y RATON! ***\n"));
     digitalWrite(LED_BUILTIN, HIGH);
   } else if (!currentConnected && lastConnected) {
     Serial.println(F("\n*** [AVISO] LA PC SE HA DESCONECTADO ***\n"));
@@ -392,10 +513,18 @@ void loop() {
   static uint8_t cmdIdx = 0;
   static bool insideCmd = false;
 
+  static bool skipNextLF = false;
+
   while (Serial.available() > 0) {
     char c = Serial.read();
 
-    // Detección de comandos con '#' (ej. #TEXTO, #BIOS, #AYUDA, #TEST, #RESET)
+    // Si el delimitador anterior fue '\r', ignorar el '\n' inmediatamente posterior
+    if (skipNextLF) {
+      skipNextLF = false;
+      if (c == '\n') continue;
+    }
+
+    // Detección de comandos con '#' (ej. #PING, #SYNC, #STATUS, #M:dx,dy, #ML, #MR, etc.)
     if (!insideTag && !insideCmd && c == '#') {
       insideCmd = true;
       cmdIdx = 0;
@@ -405,12 +534,89 @@ void loop() {
     if (insideCmd) {
       if (c == '\n' || c == '\r' || c == ' ') {
         insideCmd = false;
+        if (c == '\r') skipNextLF = true;
         cmdBuffer[cmdIdx] = '\0';
 
         // Convertir a mayúsculas
         for (uint8_t i = 0; cmdBuffer[i]; i++) cmdBuffer[i] = toupper(cmdBuffer[i]);
 
-        if (strcmp(cmdBuffer, "BIOS") == 0 || strcmp(cmdBuffer, "MODO2") == 0) {
+        // Protocolo de sincronización con aplicación (Versión 2.0)
+        if (strcmp(cmdBuffer, "PING") == 0 || strcmp(cmdBuffer, "SYNC") == 0) {
+          Serial.print(F("#PONG:BIOS_KEYBOARD_V2:LINK="));
+          Serial.print(UsbKeyboard.isConnectedToHost() ? '1' : '0');
+          Serial.print(F(",PKTS="));
+          Serial.println(UsbKeyboard.getPacketCount());
+        } else if (strcmp(cmdBuffer, "STATUS") == 0) {
+          if (UsbKeyboard.isConnectedToHost()) {
+            Serial.print(F("#STAT:LINK=1,ADDR="));
+            Serial.print(UsbKeyboard.getUsbAddress());
+            Serial.print(F(",CFG="));
+            Serial.print(UsbKeyboard.getUsbConfiguration());
+            Serial.print(F(",PKTS="));
+            Serial.println(UsbKeyboard.getPacketCount());
+          } else {
+            Serial.println(F("#STAT:LINK=0"));
+          }
+        }
+        // Comandos de Emulación de Ratón (Mouse HID)
+        else if (strncmp(cmdBuffer, "M:", 2) == 0) {
+          // #M:dx,dy (ej. #M:15,-20)
+          char* comma = strchr(cmdBuffer + 2, ',');
+          if (comma != NULL) {
+            *comma = '\0';
+            int dx = atoi(cmdBuffer + 2);
+            int dy = atoi(comma + 1);
+            UsbKeyboard.mouseMove((int8_t)dx, (int8_t)dy);
+            UsbKeyboard.update();
+          }
+        } else if (strcmp(cmdBuffer, "ML") == 0) {
+          UsbKeyboard.mouseClick(1);
+          UsbKeyboard.update();
+          Serial.println(F("OK: MOUSE CLICK LEFT"));
+        } else if (strcmp(cmdBuffer, "MR") == 0) {
+          UsbKeyboard.mouseClick(2);
+          UsbKeyboard.update();
+          Serial.println(F("OK: MOUSE CLICK RIGHT"));
+        } else if (strcmp(cmdBuffer, "MM") == 0) {
+          UsbKeyboard.mouseClick(4);
+          UsbKeyboard.update();
+          Serial.println(F("OK: MOUSE CLICK MIDDLE"));
+        } else if (strncmp(cmdBuffer, "MB:", 3) == 0) {
+          int btn = atoi(cmdBuffer + 3);
+          UsbKeyboard.mouseClick((uint8_t)(btn > 0 ? btn : 1));
+          UsbKeyboard.update();
+          Serial.println(F("OK: MOUSE BUTTON CLICK"));
+        } else if (strncmp(cmdBuffer, "MD", 2) == 0) {
+          // #MD:btn o #MD (pulsar y mantener para arrastre)
+          uint8_t btn = 1;
+          if (cmdBuffer[2] == ':') {
+            if (cmdBuffer[3] == 'R' || cmdBuffer[3] == '2') btn = 2;
+            else if (cmdBuffer[3] == 'M' || cmdBuffer[3] == '4') btn = 4;
+            else if (cmdBuffer[3] == 'L' || cmdBuffer[3] == '1') btn = 1;
+            else btn = atoi(cmdBuffer + 3);
+          }
+          UsbKeyboard.mousePress(btn > 0 ? btn : 1);
+          UsbKeyboard.update();
+          Serial.println(F("OK: MOUSE BUTTON DOWN"));
+        } else if (strncmp(cmdBuffer, "MU", 2) == 0) {
+          // #MU:btn o #MU (soltar botón)
+          uint8_t btn = 0xFF; // soltar todos si no se especifica
+          if (cmdBuffer[2] == ':') {
+            if (cmdBuffer[3] == 'R' || cmdBuffer[3] == '2') btn = 2;
+            else if (cmdBuffer[3] == 'M' || cmdBuffer[3] == '4') btn = 4;
+            else if (cmdBuffer[3] == 'L' || cmdBuffer[3] == '1') btn = 1;
+            else btn = atoi(cmdBuffer + 3);
+          }
+          UsbKeyboard.mouseRelease(btn);
+          UsbKeyboard.update();
+          Serial.println(F("OK: MOUSE BUTTON UP"));
+        } else if (strncmp(cmdBuffer, "MW:", 3) == 0) {
+          int dz = atoi(cmdBuffer + 3);
+          UsbKeyboard.mouseScroll((int8_t)dz);
+          UsbKeyboard.update();
+        }
+        // Comandos de modo y diagnóstico originales
+        else if (strcmp(cmdBuffer, "BIOS") == 0 || strcmp(cmdBuffer, "MODO2") == 0) {
           currentMode = MODE_QUICK_BIOS;
           Serial.println(F("\n-> MODO CAMBIADO: MODO BIOS RAPIDO (s=Supr, u=Arriba, etc.)"));
         } else if (strcmp(cmdBuffer, "TEXTO") == 0 || strcmp(cmdBuffer, "MODO1") == 0) {
@@ -458,7 +664,7 @@ void loop() {
         if (tagIdx < 30) {
           tagBuffer[tagIdx++] = c;
         } else {
-          // Desbordamiento: descartar y escribir literal
+          // Desbordamiento: descartar y procesar lo recibido
           insideTag = false;
           tagBuffer[tagIdx] = '\0';
           processSpecialTag(tagBuffer);
@@ -467,7 +673,7 @@ void loop() {
       continue;
     }
 
-    // Si estamos en MODO BIOS RAPIDO:
+    // MODO BIOS RAPIDO:
     if (currentMode == MODE_QUICK_BIOS) {
       switch (c) {
         case 's': case 'S': sendKeyBurst(KEY_DELETE, 6, "SUPR"); break;

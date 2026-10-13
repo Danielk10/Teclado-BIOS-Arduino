@@ -2,8 +2,8 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](https://www.android.com/)
-[![Min SDK](https://img.shields.io/badge/Min%20SDK-21%20(Lollipop)-orange.svg)](https://developer.android.com)
-[![Target SDK](https://img.shields.io/badge/Target%20SDK-34%20(Android%2014)-brightgreen.svg)](https://developer.android.com)
+[![Min SDK](https://img.shields.io/badge/Min%20SDK-23%20(Marshmallow)-orange.svg)](https://developer.android.com)
+[![Target SDK](https://img.shields.io/badge/Target%20SDK-37-brightgreen.svg)](https://developer.android.com)
 [![Hardware](https://img.shields.io/badge/Hardware-Arduino%20Uno%20%7C%20Nano%20%7C%20Pro%20Micro-red.svg)](https://www.arduino.cc/)
 
 Una aplicación Android diseñada para convertir tu smartphone o tablet en un teclado físico virtual y consola de control para acceder a la **BIOS / UEFI**, sistemas operativos heredados o terminales embebidas mediante una placa **Arduino** conectada por **USB OTG**.
@@ -199,17 +199,20 @@ Teclado-BIOS-Arduino/
 ├── LICENSE
 ├── README.md
 ├── DIAGNOSTICO_PROBLEMA_VUSB.md # Guía técnica de diagnóstico V-USB e interrupciones
+├── arduino_bios_keyboard_v2.ino # Código fuente Arduino del firmware unificado v2
+├── arduino_bios_keyboard_v2.hex # Firmware compilado listo para flashear
 ├── build.gradle               # Build script raíz con redirección a /tmp
 ├── gradle.properties          # Memoria JVM y variables de entorno
 ├── local.properties           # Ruta al SDK de Android
 ├── settings.gradle            # Configuración de repositorios y módulos
 ├── setup-sdk.sh               # Script de aprovisionamiento automatizado del SDK
 ├── app/
-│   ├── build.gradle           # Configuración del módulo de aplicación
+│   ├── build.gradle           # Configuración del módulo de aplicación (API 23 a 37)
 │   ├── proguard-rules.pro     # Reglas de ofuscación y optimización
 │   └── src/
 │       └── main/
 │           ├── AndroidManifest.xml
+│           ├── assets/firmware/       # Firmware v2 y guía empaquetados en la app
 │           ├── java/com/diamon/tecladobios/
 │           └── res/
 └── gradle/
@@ -224,9 +227,9 @@ Teclado-BIOS-Arduino/
 ## ⚙️ Requisitos Previos
 
 - **Sistema Operativo:** Linux (Ubuntu 20.04+, Debian, etc.), macOS o Windows (WSL2).
-- **JDK:** Java Development Kit (OpenJDK 17 o 21 recomendado).
+- **JDK:** Java Development Kit (OpenJDK 17 o 21 recomendado, compatibilidad bytecode Java 11).
 - **Herramientas de Línea de Comandos:** `curl`, `unzip`, `bash`.
-- **Dispositivo:** Teléfono o tablet Android con soporte para USB Host / OTG (Android 5.0 Lollipop / API 21 o superior).
+- **Dispositivo:** Teléfono o tablet Android con soporte para USB Host / OTG (Android 6.0 Marshmallow / API 23 o superior, compatible hasta Android 17 / API 37).
 - **Hardware Requerido:**
   - Adaptador o cable USB-OTG (Type-C a Type-A hembra o micro-USB a Type-A).
   - Placa Arduino (Uno, Nano, Pro Micro o Leonardo).
@@ -236,7 +239,7 @@ Teclado-BIOS-Arduino/
 
 ## 🚀 Instalación y Configuración del SDK
 
-El proyecto incluye el script automatizado [`setup-sdk.sh`](setup-sdk.sh) que descarga las herramientas oficiales de línea de comandos de Android, instala la plataforma `android-34` y las `build-tools 34.0.0` sin necesidad de NDK ni CMake pesados, configurando todo en `/tmp/android-sdk`.
+El proyecto incluye el script automatizado [`setup-sdk.sh`](setup-sdk.sh) que descarga las herramientas oficiales de línea de comandos de Android, instala las plataformas `platforms;android-23`, `platforms;android-37.0` y las `build-tools;37.0.0` sin necesidad de NDK ni herramientas pesadas, configurando todo en `/tmp/android-sdk`.
 
 Para ejecutarlo:
 
@@ -248,7 +251,7 @@ chmod +x setup-sdk.sh
 El script se encargará de:
 1. Descargar `cmdline-tools` oficial de Google en `/tmp/android-sdk`.
 2. Aceptar automáticamente las licencias de Android.
-3. Instalar `platform-tools`, `platforms;android-34` y `build-tools;34.0.0`.
+3. Instalar `platform-tools`, `platforms;android-23`, `platforms;android-37.0` y `build-tools;37.0.0`.
 4. Generar el archivo `local.properties` con `sdk.dir=/tmp/android-sdk`.
 
 ---

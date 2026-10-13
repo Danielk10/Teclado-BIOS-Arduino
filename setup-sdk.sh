@@ -31,11 +31,12 @@ set +o pipefail
 yes | sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses >/dev/null
 set -o pipefail
 
-echo "Installing Android SDK packages (platforms;android-34, build-tools;34.0.0, platform-tools)..."
+echo "Installing Android SDK packages (platforms;android-23, platforms;android-37.0, build-tools;37.0.0, platform-tools)..."
 sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" \
   "platform-tools" \
-  "platforms;android-34" \
-  "build-tools;34.0.0"
+  "platforms;android-23" \
+  "platforms;android-37.0" \
+  "build-tools;37.0.0"
 
 printf 'sdk.dir=%s\n' "${ANDROID_SDK_ROOT}" > "${PROJECT_ROOT}/local.properties"
 chmod +x "${PROJECT_ROOT}/gradlew"

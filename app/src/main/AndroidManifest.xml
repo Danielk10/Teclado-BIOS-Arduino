@@ -23,7 +23,8 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TecladoBIOS.Fullscreen">
+        android:theme="@style/Theme.TecladoBIOS.Fullscreen"
+        tools:targetApi="37">
 
         <activity
             android:name=".MainActivity"
