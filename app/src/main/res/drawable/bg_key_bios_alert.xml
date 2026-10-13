@@ -3,22 +3,22 @@
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <corners android:radius="6dp" />
-            <solid android:color="@color/bios_amber_pressed" />
+            <solid android:color="#EA580C" />
             <stroke android:width="2dp" android:color="#FFFFFF" />
         </shape>
     </item>
     <item android:state_focused="true">
         <shape android:shape="rectangle">
             <corners android:radius="6dp" />
-            <solid android:color="@color/bios_amber_bg" />
-            <stroke android:width="2dp" android:color="@color/bios_amber" />
+            <solid android:color="#C2410C" />
+            <stroke android:width="2dp" android:color="#FED7AA" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="6dp" />
-            <solid android:color="@color/bios_amber_bg" />
-            <stroke android:width="1.5dp" android:color="@color/bios_amber_stroke" />
+            <solid android:color="#9A3412" />
+            <stroke android:width="1.5dp" android:color="#FB923C" />
         </shape>
     </item>
 </selector>

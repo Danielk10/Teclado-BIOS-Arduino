@@ -449,12 +449,14 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         isBiosMode = !isBiosMode;
         if (isBiosMode) {
             btnToggleMode.setText(R.string.mode_bios);
-            btnToggleMode.setTextColor(ContextCompat.getColor(this, R.color.bios_cyan));
+            btnToggleMode.setBackgroundResource(R.drawable.bg_key_action);
+            btnToggleMode.setTextColor(Color.WHITE);
             usbManager.sendString("#BIOS\n");
             logTerminalTx("#BIOS (Modo BIOS Rápido activado)");
         } else {
             btnToggleMode.setText(R.string.mode_text);
-            btnToggleMode.setTextColor(ContextCompat.getColor(this, R.color.bios_amber));
+            btnToggleMode.setBackgroundResource(R.drawable.bg_key_bios_alert);
+            btnToggleMode.setTextColor(Color.WHITE);
             usbManager.sendString("#TEXTO\n");
             logTerminalTx("#TEXTO (Modo Texto Completo activado)");
         }

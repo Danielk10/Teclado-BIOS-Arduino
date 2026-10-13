@@ -117,11 +117,13 @@
             android:layout_height="28dp"
             android:background="@drawable/bg_key_action"
             android:text="@string/mode_bios"
-            android:textColor="@color/bios_cyan"
+            android:textColor="#FFFFFF"
             android:textSize="10sp"
             android:textStyle="bold"
             android:textAllCaps="false"
             android:paddingHorizontal="8dp"
+            android:minHeight="0dp"
+            android:includeFontPadding="false"
             android:stateListAnimator="@null"
             android:layout_marginEnd="6dp" />
 
@@ -134,11 +136,13 @@
             android:drawableStart="@drawable/ic_download"
             android:drawablePadding="4dp"
             android:text="@string/download_firmware"
-            android:textColor="@color/text_primary"
+            android:textColor="#FFFFFF"
             android:textSize="10sp"
             android:textStyle="bold"
             android:textAllCaps="false"
             android:paddingHorizontal="8dp"
+            android:minHeight="0dp"
+            android:includeFontPadding="false"
             android:stateListAnimator="@null" />
     </LinearLayout>
 
@@ -211,12 +215,16 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                android:background="@drawable/bg_mouse_button"
+                android:background="@drawable/bg_mouse_button_blue"
                 android:text="CLIC IZQ\n(L)"
-                android:lineSpacingExtra="2dp"
-                android:textColor="@color/bios_cyan"
-                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:textSize="10.5sp"
                 android:textStyle="bold"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="0dp"
+                android:includeFontPadding="false"
+                android:lineSpacingMultiplier="0.85"
                 android:stateListAnimator="@null" />
 
             <Button
@@ -225,12 +233,16 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                android:background="@drawable/bg_mouse_button"
+                android:background="@drawable/bg_mouse_button_amber"
                 android:text="RUEDA\n(M)"
-                android:lineSpacingExtra="2dp"
-                android:textColor="@color/bios_amber"
-                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:textSize="10.5sp"
                 android:textStyle="bold"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="0dp"
+                android:includeFontPadding="false"
+                android:lineSpacingMultiplier="0.85"
                 android:stateListAnimator="@null" />
 
             <Button
@@ -239,12 +251,16 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                android:background="@drawable/bg_mouse_button"
+                android:background="@drawable/bg_mouse_button_blue"
                 android:text="CLIC DER\n(R)"
-                android:lineSpacingExtra="2dp"
-                android:textColor="@color/bios_cyan"
-                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:textSize="10.5sp"
                 android:textStyle="bold"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="0dp"
+                android:includeFontPadding="false"
+                android:lineSpacingMultiplier="0.85"
                 android:stateListAnimator="@null" />
         </LinearLayout>
     </LinearLayout>
@@ -391,7 +407,7 @@
                     android:layout_weight="0.9"
                     android:layout_marginHorizontal="1dp"
                     android:text="@string/key_plus"
-                    android:textSize="15sp" />
+                    android:textSize="10sp" />
 
                 <Button
                     android:id="@+id/btnKeyMinus"
@@ -399,7 +415,7 @@
                     android:layout_weight="0.9"
                     android:layout_marginStart="2dp"
                     android:text="@string/key_minus"
-                    android:textSize="15sp" />
+                    android:textSize="10sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -624,8 +640,8 @@
                     android:layout_weight="1.6"
                     android:background="@drawable/bg_key_bios_alert"
                     android:text="@string/key_cad"
-                    android:textColor="@color/bios_amber"
-                    android:textSize="9sp" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="9.5sp" />
 
                 <!-- Backspace Key -->
                 <Button
@@ -633,7 +649,8 @@
                     style="@style/KeyboardKey"
                     android:layout_weight="1.4"
                     android:text="@string/key_bs"
-                    android:textSize="10sp" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="9.5sp" />
             </LinearLayout>
 
             <!-- Row 4: F1 Help, F9 Defaults, Page Navigation & USB Diagnostics -->
@@ -648,56 +665,63 @@
                     style="@style/KeyboardKey"
                     android:layout_weight="1"
                     android:text="@string/key_f1"
-                    android:textColor="@color/text_primary"
-                    android:textSize="9sp" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="8.5sp"
+                    android:lineSpacingMultiplier="0.85" />
 
                 <Button
                     android:id="@+id/btnKeyF9"
                     style="@style/KeyboardKey"
                     android:layout_weight="1"
                     android:text="@string/key_f9"
-                    android:textColor="@color/text_primary"
-                    android:textSize="9sp" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="8.5sp"
+                    android:lineSpacingMultiplier="0.85" />
 
                 <Button
                     android:id="@+id/btnKeyPgUp"
                     style="@style/KeyboardKey"
                     android:layout_weight="1"
                     android:text="@string/key_pgup"
-                    android:textColor="@color/text_primary"
-                    android:textSize="9sp" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="8.5sp"
+                    android:lineSpacingMultiplier="0.85" />
 
                 <Button
                     android:id="@+id/btnKeyPgDn"
                     style="@style/KeyboardKey"
                     android:layout_weight="1"
                     android:text="@string/key_pgdn"
-                    android:textColor="@color/text_primary"
-                    android:textSize="9sp" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="8.5sp"
+                    android:lineSpacingMultiplier="0.85" />
 
                 <Button
                     android:id="@+id/btnTestHardware"
                     style="@style/KeyboardKey"
                     android:layout_weight="1.2"
+                    android:background="@drawable/bg_key_test"
                     android:text="@string/btn_test"
-                    android:textColor="@color/bios_cyan"
-                    android:textSize="9sp" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="8sp" />
 
                 <Button
                     android:id="@+id/btnResetUsb"
                     style="@style/KeyboardKey"
                     android:layout_weight="1.1"
+                    android:background="@drawable/bg_key_reset"
                     android:text="@string/btn_reset"
-                    android:textColor="@color/status_red"
-                    android:textSize="9sp" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="8sp" />
 
                 <Button
                     android:id="@+id/btnQueryStatus"
                     style="@style/KeyboardKey"
                     android:layout_weight="1.1"
+                    android:background="@drawable/bg_key_query"
                     android:text="@string/btn_query"
-                    android:textColor="@color/bios_amber"
-                    android:textSize="9sp" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="8sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -752,10 +776,12 @@
                 android:layout_height="22dp"
                 android:background="@drawable/bg_key_action"
                 android:text="@string/send_cmd"
-                android:textColor="@color/bios_cyan"
-                android:textSize="9sp"
+                android:textColor="#FFFFFF"
+                android:textSize="9.5sp"
                 android:textStyle="bold"
-                android:paddingHorizontal="6dp"
+                android:paddingHorizontal="8dp"
+                android:minHeight="0dp"
+                android:includeFontPadding="false"
                 android:stateListAnimator="@null" />
 
             <ImageButton
