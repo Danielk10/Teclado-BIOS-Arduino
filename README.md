@@ -63,33 +63,113 @@ flowchart LR
 
 ---
 
-## 🔌 Diagrama de Conexión de Hardware
+## 🔌 Cómo Construir el Circuito Casero (Hardware DIY)
 
-### Opción 1: Arduino Pro Micro / Leonardo (USB HID Nativo)
-El microcontrolador **ATmega32U4** emula un teclado USB HID nativo para la PC mientras recibe comandos serie desde el puerto Android (usando Serial o un módulo USB-Serie secundario):
+Para que un **Arduino Uno o Nano** (con microcontrolador ATmega328P a 5V) pueda emular un Teclado y Ratón USB a 3.3V directamente conectado al puerto USB de una computadora, se utiliza la técnica de emulación física **V-USB**. 
+
+Puedes armar este circuito fácilmente en una protoboard o placa perforada utilizando componentes muy económicos y un cable USB reciclado.
+
+---
+
+### 🧰 Lista de Materiales Necesarios
+
+| Componente | Cantidad | Especificaciones / Notas |
+|---|:---:|---|
+| **Placa Arduino** | 1 | Arduino Uno R3 o Arduino Nano (ATmega328P con chip CH340 o FTDI). |
+| **Cable USB "Picado"** | 1 | Cable USB estándar (Tipo-A macho) cortado, pelando sus 4 hilos internos. |
+| **Resistencias en serie** | 2 | **45 Ω a 68 Ω** (valores ideales: 68 Ω, 47 Ω o 56 Ω a 1/4W) para las líneas de datos. |
+| **Resistencia Pull-up** | 1 | **1.5 kΩ** (1/4W) obligatoria para el estándar USB Low-Speed en D-. |
+| **Diodos de limitación** | 2 | **Diodos Zener de 3.6V** (o 3.3V, ej. BZX55C3V6, 1N5227B) o diodos de cristal de alta velocidad (1N4148 / Schottky). |
+| **Adaptador USB-OTG** | 1 | Para conectar el puerto USB del Arduino al teléfono móvil Android. |
+
+---
+
+### 🎨 Código de Colores Estándar del Cable USB Picado
+
+Al cortar y pelar el cable USB que irá hacia la PC, encontrarás 4 hilos:
 
 ```
-+-------------------+                 +----------------------+                 +-----------------+
-| Dispositivo Móvil |                 |  Arduino Pro Micro   |                 |    PC / Placa   |
-|     (Android)     | == USB-OTG ==>  | (ATmega32U4 USB HID) | == Cable USB => | (Puerto USB PC) |
-+-------------------+                 +----------------------+                 +-----------------+
+[CONECTOR USB TIPO-A (HACIA PC)]
+  ├── ROJO   : +5V VBUS  ───────> ⚠️ ¡NO CONECTAR! Cortar y aislar con cinta térmica/aislante.
+  ├── BLANCO : D- (Datos -) ────> Conectar a Pin D4 (a través de resistencia de 68Ω) + Pull-up 1.5k a 3.3V.
+  ├── VERDE  : D+ (Datos +) ────> Conectar a Pin D2 (a través de resistencia de 68Ω).
+  └── NEGRO  : GND (Masa)   ────> Conectar al pin GND del Arduino.
 ```
 
-### Opción 2: Arduino Uno / Nano con Salida PS/2
-Para computadoras antiguas que requieren teclado PS/2 directo en la placa madre:
+> [!CAUTION]
+> **¡PELIGRO DE CHOQUE ELÉCTRICO CON EL CABLE ROJO (+5V)!**
+> El Arduino ya recibe alimentación limpia de 5V desde tu teléfono móvil mediante el cable USB-OTG. **NUNCA conectes el cable rojo (+5V de la PC) al Arduino**. Si los 5V de la PC chocan con los 5V del teléfono, se producirán caídas de tensión, reinicios continuos del microcontrolador o disparos de la protección térmica del puerto OTG del móvil.
+
+---
+
+### 📐 Diagrama Esquemático del Circuito
 
 ```
-+--------------------+               +------------------+               +------------------+
-| Dispositivo Móvil  | == USB OTG => |   Arduino Uno    |               |  Puerto Mini-DIN |
-| (App Teclado BIOS) |               |  (ATmega328P)    |               |     PS/2 PC      |
-+--------------------+               +------------------+               +------------------+
-                                        Pin D3 (Clock)  -------------->    Pin 5 (Clock)
-                                        Pin D2 (Data)   -------------->    Pin 1 (Data)
-                                        GND             -------------->    Pin 3 (GND)
-                                        5V              <--------------    Pin 4 (+5V VCC)
+                         ARDUINO UNO / NANO (ATmega328P)
+                        +-------------------------------+
+                        |                               |
+(Teléfono Android) <==> | Puerto USB-B / Mini-USB (OTG) | (Alimentación 5V + Datos Serie)
+                        |                               |
+                        |                    Pin 3.3V   | ────+
+                        |                               |     |
+                        |                               |    [1.5 kΩ] Resistencia Pull-Up
+                        |                               |     |
+CABLE BLANCO (D-) ──────+───────[ 68 Ω ]──────── Pin D4 | <───+
+(USB PC)                |                               |
+                       === Diodo Zener 3.6V (Cátodo a D4, Ánodo a GND)
+                       GND                              |
+                                                        |
+CABLE VERDE (D+)  ──────────────[ 68 Ω ]──────── Pin D2 | (Interrupción de hardware INT0)
+(USB PC)                |                               |
+                       === Diodo Zener 3.6V (Cátodo a D2, Ánodo a GND)
+                       GND                              |
+                                                        |
+CABLE NEGRO (GND) ────────────────────────────── Pin GND|
+(USB PC)                                                |
+                        +-------------------------------+
 ```
 
-> **Nota de Seguridad:** Se recomienda colocar resistencias pull-up de 4.7kΩ entre las líneas Data/Clock y los 5V si no están provistas por la placa madre.
+---
+
+### 🔬 Opciones para Limitar el Voltaje a 3.3V / 3.6V
+
+El microcontrolador ATmega328P trabaja a **5V**, pero el bus USB requiere que las líneas de datos operen entre **2.8V y 3.6V**. Superar este voltaje puede hacer que el chipset de la laptop desconecte el puerto por protección. Puedes usar cualquiera de estas dos opciones:
+
+#### Opción A (Recomendada): Diodos Zener de 3.6V (o 3.3V) a GND
+* Coloca el **cátodo** (el lado con la franja negra o marcada) conectado a la línea de datos (D2 o D4).
+* Coloca el **ánodo** conectado a la línea GND del Arduino.
+* *Función:* Recorta cualquier pico superior a 3.6V hacia masa de manera limpia y segura.
+
+#### Opción B (Alternativa): Diodos de Cristal de Alta Velocidad (1N4148 / Schottky)
+* Si no dispones de diodos zener de 3.6V en tu taller, puedes usar diodos de conmutación rápida de silicio/cristal (como el **1N4148**) o diodos Schottky de pequeña señal colocados en serie o en configuración de fijación (clamping) hacia la línea de 3.3V del Arduino:
+  * Ánodo a la línea de datos (D2 / D4).
+  * Cátodo conectado al pin de **3.3V** del Arduino.
+  * *Función:* Cuando la tensión en la línea supera 3.3V + 0.3V (aprox. 3.6V), el diodo conduce y drena el exceso de voltaje al riel de 3.3V.
+
+---
+
+### 📌 Tabla Resumen de Conexiones Pin a Pin
+
+| Hilo del Cable USB (PC) | Componentes Intermedios | Pin en Arduino Uno / Nano | Propósito |
+|---|---|---|---|
+| **Verde (D+)** | Resistencia de **45 Ω - 68 Ω** en serie + Zener 3.6V a GND | **Pin D2** | Señal D+ (Dispara la interrupción externa `INT0` de V-USB). |
+| **Blanco (D-)** | Resistencia de **45 Ω - 68 Ω** en serie + Zener 3.6V a GND | **Pin D4** | Señal D- (Línea de datos y reinicio eléctrico de bus SE0). |
+| **Blanco (D-)** | Resistencia Pull-up de **1.5 kΩ** conectada al riel | **Pin 3.3V** *(o Pin D5)* | **Obligatorio:** Notifica al host que es un dispositivo *Low-Speed*. |
+| **Negro (GND)** | Conexión directa | **Pin GND** | Referencia de masa común obligatoria entre PC y Arduino. |
+| **Rojo (+5V)** | **NINGUNO (CORTAR/AISLAR)** | **NO CONECTAR** | Evita cortocircuitos con la alimentación del teléfono. |
+
+---
+
+### 🧪 Test Eléctrico de Pines con la Aplicación
+
+Una vez ensamblado el circuito, antes de conectar la PC puedes comprobar que las resistencias y cables estén perfectos:
+1. Conecta el Arduino al teléfono y abre la app **Teclado BIOS Arduino**.
+2. Presiona el botón **`#TEST PINES`** (o envía `t` en la consola).
+3. El microcontrolador medirá el voltaje de las líneas en reposo y responderá:
+   * **`ESTADO ELECTRICO: CORRECTO`** $\to$ Cable blanco en alto (~3.3V) y verde en bajo (0V). ¡Listo para conectar a la PC!
+   * **`ERROR: CABLES INVERTIDOS`** $\to$ El cable verde y blanco están al revés (intercambia D2 y D4).
+   * **`ERROR: FALTA RESISTENCIA PULL-UP 1.5K`** $\to$ La línea D- está en 0V. Revisa la resistencia hacia 3.3V.
+
 
 ---
 
