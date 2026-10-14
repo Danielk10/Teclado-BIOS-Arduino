@@ -140,9 +140,10 @@
                 style="@style/HeaderButton"
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"
+                android:minWidth="110dp"
                 android:background="@drawable/bg_key_action"
                 android:text="@string/mode_bios"
-                android:layout_marginEnd="4dp" />
+                android:layout_marginEnd="5dp" />
 
             <!-- Descargar Firmware Button -->
             <Button
@@ -150,9 +151,10 @@
                 style="@style/HeaderButton"
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"
+                android:minWidth="120dp"
                 android:background="@drawable/bg_key_standard"
                 android:drawableStart="@drawable/ic_download"
-                android:drawablePadding="3dp"
+                android:drawablePadding="4dp"
                 android:text="@string/download_firmware" />
         </LinearLayout>
     </LinearLayout>
