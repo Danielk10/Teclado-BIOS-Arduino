@@ -11,127 +11,152 @@
     <!-- 1. HEADER / STATUS BAR -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="42dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="4dp">
 
-        <!-- App Logo & Title -->
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_launcher_foreground"
-            android:contentDescription="@string/app_name" />
-
-        <TextView
-            android:id="@+id/tvAppTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_app"
-            android:textColor="@color/bios_cyan"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginStart="6dp" />
-
-        <!-- USB Connection Chip -->
-        <LinearLayout
-            android:id="@+id/chipUsbStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="26dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/bg_status_chip"
-            android:layout_marginStart="6dp"
-            android:paddingHorizontal="6dp">
-
-            <ImageView
-                android:id="@+id/ivUsbIcon"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:src="@drawable/ic_usb"
-                app:tint="@color/text_muted"
-                android:contentDescription="USB Status" />
-
-            <TextView
-                android:id="@+id/tvUsbStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/usb_disconnected"
-                android:textColor="@color/status_red"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:layout_marginStart="4dp" />
-        </LinearLayout>
-
-        <!-- PC Link LED Indicator -->
-        <LinearLayout
-            android:id="@+id/chipPcLink"
-            android:layout_width="wrap_content"
-            android:layout_height="26dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/bg_status_chip"
-            android:layout_marginStart="4dp"
-            android:paddingHorizontal="6dp">
-
-            <View
-                android:id="@+id/viewPcLinkLed"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:background="@drawable/bg_led_pc" />
-
-            <TextView
-                android:id="@+id/tvPcLinkStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/pc_link_disconnected"
-                android:textColor="@color/status_red"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:layout_marginStart="4dp" />
-        </LinearLayout>
-
-        <!-- Last Sent Key Chip -->
-        <TextView
-            android:id="@+id/tvLastKey"
-            android:layout_width="wrap_content"
-            android:layout_height="26dp"
-            android:background="@drawable/bg_status_chip"
-            android:gravity="center"
-            android:text="@string/last_key_none"
-            android:textColor="@color/text_primary"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:layout_marginStart="4dp"
-            android:paddingHorizontal="6dp" />
-
-        <View
+        <!-- Left status & title container (scrolls horizontally if narrow to never crowd buttons) -->
+        <HorizontalScrollView
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            android:fillViewport="true">
 
-        <!-- Mode Toggle Button -->
-        <Button
-            android:id="@+id/btnToggleMode"
-            style="@style/HeaderButton"
-            android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:background="@drawable/bg_key_action"
-            android:text="@string/mode_bios"
-            android:paddingHorizontal="6dp"
-            android:layout_marginEnd="4dp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-        <!-- Descargar Firmware Button -->
-        <Button
-            android:id="@+id/btnDownloadFirmware"
-            style="@style/HeaderButton"
+                <!-- App Logo & Title -->
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_launcher_foreground"
+                    android:contentDescription="@string/app_name" />
+
+                <TextView
+                    android:id="@+id/tvAppTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_app"
+                    android:textColor="@color/bios_cyan"
+                    android:textSize="11.5sp"
+                    android:textStyle="bold"
+                    android:singleLine="true"
+                    android:layout_marginStart="4dp" />
+
+                <!-- USB Connection Chip -->
+                <LinearLayout
+                    android:id="@+id/chipUsbStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_status_chip"
+                    android:layout_marginStart="5dp"
+                    android:paddingHorizontal="6dp">
+
+                    <ImageView
+                        android:id="@+id/ivUsbIcon"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_usb"
+                        app:tint="@color/text_muted"
+                        android:contentDescription="@string/desc_usb_status" />
+
+                    <TextView
+                        android:id="@+id/tvUsbStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/usb_disconnected"
+                        android:textColor="@color/status_red"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:singleLine="true"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+
+                <!-- PC Link LED Indicator -->
+                <LinearLayout
+                    android:id="@+id/chipPcLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_status_chip"
+                    android:layout_marginStart="5dp"
+                    android:paddingHorizontal="6dp">
+
+                    <View
+                        android:id="@+id/viewPcLinkLed"
+                        android:layout_width="9dp"
+                        android:layout_height="9dp"
+                        android:background="@drawable/bg_led_pc" />
+
+                    <TextView
+                        android:id="@+id/tvPcLinkStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pc_link_disconnected"
+                        android:textColor="@color/status_red"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:singleLine="true"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+
+                <!-- Last Sent Key Chip -->
+                <TextView
+                    android:id="@+id/tvLastKey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:background="@drawable/bg_status_chip"
+                    android:gravity="center"
+                    android:text="@string/last_key_none"
+                    android:textColor="@color/text_primary"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:singleLine="true"
+                    android:layout_marginStart="5dp"
+                    android:paddingHorizontal="6dp" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- Right action buttons container (Enlarged and elongated so text never clips) -->
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:background="@drawable/bg_key_standard"
-            android:drawableStart="@drawable/ic_download"
-            android:drawablePadding="3dp"
-            android:paddingHorizontal="6dp"
-            android:text="@string/download_firmware" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginStart="6dp">
+
+            <!-- Mode Toggle Button -->
+            <Button
+                android:id="@+id/btnToggleMode"
+                style="@style/HeaderButton"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:minWidth="135dp"
+                android:background="@drawable/bg_key_action"
+                android:text="@string/mode_bios"
+                android:layout_marginEnd="6dp" />
+
+            <!-- Descargar Firmware Button -->
+            <Button
+                android:id="@+id/btnDownloadFirmware"
+                style="@style/HeaderButton"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:minWidth="180dp"
+                android:background="@drawable/bg_key_standard"
+                android:drawableStart="@drawable/ic_download"
+                android:drawablePadding="6dp"
+                android:text="@string/download_firmware" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- 2. TOP MOUSE PANEL (ENLARGED TOUCHPAD + 3 BOTONES: L, M, R) -->
@@ -157,12 +182,12 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_mouse"
-                android:contentDescription="Mouse BIOS" />
+                android:contentDescription="@string/desc_mouse_bios" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RATÓN UEFI\nHID USB"
+                android:text="@string/label_mouse_title"
                 android:gravity="center"
                 android:textColor="@color/bios_cyan"
                 android:textSize="9sp"
@@ -185,7 +210,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="🖱 TOUCHPAD UEFI: Desliza para mover cursor · Tap = Clic Izq · 2 Dedos = Clic Der / Scroll"
+                android:text="@string/label_touchpad_hint"
                 android:textColor="@color/bios_cyan"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -205,7 +230,7 @@
                 android:layout_weight="1"
                 android:layout_margin="1.5dp"
                 android:background="@drawable/bg_mouse_button_blue"
-                android:text="CLIC IZQ\n(L)" />
+                android:text="@string/btn_mouse_left" />
 
             <Button
                 android:id="@+id/btnMouseMiddle"
@@ -215,7 +240,7 @@
                 android:layout_weight="1"
                 android:layout_margin="1.5dp"
                 android:background="@drawable/bg_mouse_button_amber"
-                android:text="RUEDA\n(M)" />
+                android:text="@string/btn_mouse_middle" />
 
             <Button
                 android:id="@+id/btnMouseRight"
@@ -225,7 +250,7 @@
                 android:layout_weight="1"
                 android:layout_margin="1.5dp"
                 android:background="@drawable/bg_mouse_button_blue"
-                android:text="CLIC DER\n(R)" />
+                android:text="@string/btn_mouse_right" />
         </LinearLayout>
     </LinearLayout>
 
@@ -432,7 +457,7 @@
                         android:background="@drawable/bg_dpad_button"
                         android:src="@drawable/ic_arrow_up"
                         android:scaleType="centerInside"
-                        android:contentDescription="Arriba" />
+                        android:contentDescription="@string/desc_dpad_up" />
 
                     <View
                         android:layout_width="0dp"
@@ -457,7 +482,7 @@
                         android:background="@drawable/bg_dpad_button"
                         android:src="@drawable/ic_arrow_left"
                         android:scaleType="centerInside"
-                        android:contentDescription="Izquierda" />
+                        android:contentDescription="@string/desc_dpad_left" />
 
                     <Button
                         android:id="@+id/btnDpadCenter"
@@ -478,7 +503,7 @@
                         android:background="@drawable/bg_dpad_button"
                         android:src="@drawable/ic_arrow_right"
                         android:scaleType="centerInside"
-                        android:contentDescription="Derecha" />
+                        android:contentDescription="@string/desc_dpad_right" />
                 </LinearLayout>
 
                 <!-- Row 3: DOWN Arrow -->
@@ -502,7 +527,7 @@
                         android:background="@drawable/bg_dpad_button"
                         android:src="@drawable/ic_arrow_down"
                         android:scaleType="centerInside"
-                        android:contentDescription="Abajo" />
+                        android:contentDescription="@string/desc_dpad_down" />
 
                     <View
                         android:layout_width="0dp"
@@ -713,7 +738,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TX/RX SERIAL 9600 8N1:"
+                android:text="@string/terminal_label"
                 android:textColor="@color/terminal_info"
                 android:textSize="9.5sp"
                 android:fontFamily="monospace"
@@ -742,7 +767,7 @@
                 style="@style/TerminalSendButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="ENVIAR" />
+                android:text="@string/send_cmd" />
 
             <ImageButton
                 android:id="@+id/btnCopyLog"
@@ -779,7 +804,7 @@
                 android:textSize="9sp"
                 android:fontFamily="monospace"
                 android:textIsSelectable="true"
-                android:text="[SISTEMA] Listo. Conecte el Arduino por USB OTG... (Mantén presionado para copiar)" />
+                android:text="@string/terminal_initial_prompt" />
         </ScrollView>
     </LinearLayout>
 

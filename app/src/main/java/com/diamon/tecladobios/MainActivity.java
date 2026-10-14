@@ -204,13 +204,13 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
                     v.setPressed(true);
                     triggerHaptic();
                     usbManager.sendMouseDown(UsbSerialManager.MOUSE_BUTTON_LEFT);
-                    updateLastAction("CLIC IZQ (PULSADO)");
+                    updateLastAction(getString(R.string.action_mouse_left_down));
                     return true;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                     v.setPressed(false);
                     usbManager.sendMouseUp(UsbSerialManager.MOUSE_BUTTON_LEFT);
-                    updateLastAction("CLIC IZQ (LIBERADO)");
+                    updateLastAction(getString(R.string.action_mouse_left_up));
                     return true;
             }
             return false;
@@ -222,13 +222,13 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
                     v.setPressed(true);
                     triggerHaptic();
                     usbManager.sendMouseDown(UsbSerialManager.MOUSE_BUTTON_MIDDLE);
-                    updateLastAction("RUEDA / MED (PULSADO)");
+                    updateLastAction(getString(R.string.action_mouse_mid_down));
                     return true;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                     v.setPressed(false);
                     usbManager.sendMouseUp(UsbSerialManager.MOUSE_BUTTON_MIDDLE);
-                    updateLastAction("RUEDA / MED (LIBERADO)");
+                    updateLastAction(getString(R.string.action_mouse_mid_up));
                     return true;
             }
             return false;
@@ -240,44 +240,44 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
                     v.setPressed(true);
                     triggerHaptic();
                     usbManager.sendMouseDown(UsbSerialManager.MOUSE_BUTTON_RIGHT);
-                    updateLastAction("CLIC DER (PULSADO)");
+                    updateLastAction(getString(R.string.action_mouse_right_down));
                     return true;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                     v.setPressed(false);
                     usbManager.sendMouseUp(UsbSerialManager.MOUSE_BUTTON_RIGHT);
-                    updateLastAction("CLIC DER (LIBERADO)");
+                    updateLastAction(getString(R.string.action_mouse_right_up));
                     return true;
             }
             return false;
         });
 
         // Dedicated BIOS keys
-        btnKeyDel.setOnClickListener(v -> sendKeyAction("DEL / SUPR", "s", "[DEL]"));
-        btnKeyF2.setOnClickListener(v -> sendKeyAction("F2 SETUP", "2", "[F2]"));
-        btnKeyF11.setOnClickListener(v -> sendKeyAction("F11 BOOT", "f", "[F11]"));
-        btnKeyF12.setOnClickListener(v -> sendKeyAction("F12 BOOT", "b", "[F12]"));
-        btnKeyF10.setOnClickListener(v -> sendKeyAction("F10 GUARDAR", "0", "[F10]"));
-        btnKeyEsc.setOnClickListener(v -> sendKeyAction("ESC", "x", "[ESC]"));
-        btnKeyEnter.setOnClickListener(v -> sendKeyAction("ENTER", "e", "[ENTER]"));
-        btnKeyTab.setOnClickListener(v -> sendKeyAction("TAB", "\t", "[TAB]"));
-        btnKeySpace.setOnClickListener(v -> sendKeyAction("ESPACIO", " ", " "));
+        btnKeyDel.setOnClickListener(v -> sendKeyAction(getString(R.string.action_del), "s", "[DEL]"));
+        btnKeyF2.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f2), "2", "[F2]"));
+        btnKeyF11.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f11), "f", "[F11]"));
+        btnKeyF12.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f12), "b", "[F12]"));
+        btnKeyF10.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f10), "0", "[F10]"));
+        btnKeyEsc.setOnClickListener(v -> sendKeyAction(getString(R.string.action_esc), "x", "[ESC]"));
+        btnKeyEnter.setOnClickListener(v -> sendKeyAction(getString(R.string.action_enter), "e", "[ENTER]"));
+        btnKeyTab.setOnClickListener(v -> sendKeyAction(getString(R.string.action_tab), "\t", "[TAB]"));
+        btnKeySpace.setOnClickListener(v -> sendKeyAction(getString(R.string.action_space), " ", " "));
         btnKeyPlus.setOnClickListener(v -> sendKeyAction("+", "+", "+"));
         btnKeyMinus.setOnClickListener(v -> sendKeyAction("-", "-", "-"));
-        btnKeyCad.setOnClickListener(v -> sendKeyAction("CTRL+ALT+DEL", "[CAD]", "[CAD]"));
+        btnKeyCad.setOnClickListener(v -> sendKeyAction(getString(R.string.key_cad), "[CAD]", "[CAD]"));
 
         // D-Pad
-        btnDpadUp.setOnClickListener(v -> sendKeyAction("ARRIBA", "u", "[UP]"));
-        btnDpadDown.setOnClickListener(v -> sendKeyAction("ABAJO", "d", "[DOWN]"));
-        btnDpadLeft.setOnClickListener(v -> sendKeyAction("IZQUIERDA", "l", "[LEFT]"));
-        btnDpadRight.setOnClickListener(v -> sendKeyAction("DERECHA", "r", "[RIGHT]"));
-        btnDpadCenter.setOnClickListener(v -> sendKeyAction("OK / ENTER", "e", "[ENTER]"));
+        btnDpadUp.setOnClickListener(v -> sendKeyAction(getString(R.string.action_dpad_up), "u", "[UP]"));
+        btnDpadDown.setOnClickListener(v -> sendKeyAction(getString(R.string.action_dpad_down), "d", "[DOWN]"));
+        btnDpadLeft.setOnClickListener(v -> sendKeyAction(getString(R.string.action_dpad_left), "l", "[LEFT]"));
+        btnDpadRight.setOnClickListener(v -> sendKeyAction(getString(R.string.action_dpad_right), "r", "[RIGHT]"));
+        btnDpadCenter.setOnClickListener(v -> sendKeyAction(getString(R.string.action_dpad_ok), "e", "[ENTER]"));
 
         // Extra Functions & Page Navigation
-        if (btnKeyF1 != null) btnKeyF1.setOnClickListener(v -> sendKeyAction("F1 AYUDA", "[F1]", "[F1]"));
-        if (btnKeyF9 != null) btnKeyF9.setOnClickListener(v -> sendKeyAction("F9 DEFAULT", "[F9]", "[F9]"));
-        if (btnKeyPgUp != null) btnKeyPgUp.setOnClickListener(v -> sendKeyAction("RE PÁG", "[PGUP]", "[PGUP]"));
-        if (btnKeyPgDn != null) btnKeyPgDn.setOnClickListener(v -> sendKeyAction("AV PÁG", "[PGDN]", "[PGDN]"));
+        if (btnKeyF1 != null) btnKeyF1.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f1), "[F1]", "[F1]"));
+        if (btnKeyF9 != null) btnKeyF9.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f9), "[F9]", "[F9]"));
+        if (btnKeyPgUp != null) btnKeyPgUp.setOnClickListener(v -> sendKeyAction(getString(R.string.action_pgup), "[PGUP]", "[PGUP]"));
+        if (btnKeyPgDn != null) btnKeyPgDn.setOnClickListener(v -> sendKeyAction(getString(R.string.action_pgdn), "[PGDN]", "[PGDN]"));
 
         // QWERTY Keys
         setupQwertyKeys();
@@ -358,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
                                 int scrollDz = deltaY > 0 ? -1 : 1;
                                 usbManager.sendMouseWheel(scrollDz);
                                 lastMoveSentTime = now;
-                                updateLastAction("RUEDA SCROLL " + (scrollDz > 0 ? "ARRIBA" : "ABAJO"));
+                                updateLastAction(getString(scrollDz > 0 ? R.string.action_wheel_scroll_up : R.string.action_wheel_scroll_down));
                             }
                             lastTouchX = curX;
                             lastTouchY = curY;
@@ -390,10 +390,10 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
                         triggerHaptic();
                         if (maxPointerCount >= 2) {
                             usbManager.sendMouseClick(UsbSerialManager.MOUSE_BUTTON_RIGHT);
-                            updateLastAction("TAP 2 DEDOS (CLIC DER)");
+                            updateLastAction(getString(R.string.action_tap_2_fingers));
                         } else {
                             usbManager.sendMouseClick(UsbSerialManager.MOUSE_BUTTON_LEFT);
-                            updateLastAction("TAP 1 DEDO (CLIC IZQ)");
+                            updateLastAction(getString(R.string.action_tap_1_finger));
                         }
                     }
                     return true;
@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         }
 
         // Backspace
-        findViewById(R.id.key_bs).setOnClickListener(v -> sendKeyAction("BORRAR", "\b", "[BS]"));
+        findViewById(R.id.key_bs).setOnClickListener(v -> sendKeyAction(getString(R.string.action_bs), "\b", "[BS]"));
     }
 
     private void sendKeyAction(String displayName, String biosCmd, String textCmd) {
@@ -452,13 +452,13 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
             btnToggleMode.setBackgroundResource(R.drawable.bg_key_action);
             btnToggleMode.setTextColor(Color.WHITE);
             usbManager.sendString("#BIOS\n");
-            logTerminalTx("#BIOS (Modo BIOS Rápido activado)");
+            logTerminalTx(getString(R.string.log_mode_bios_enabled));
         } else {
             btnToggleMode.setText(R.string.mode_text);
             btnToggleMode.setBackgroundResource(R.drawable.bg_key_bios_alert);
             btnToggleMode.setTextColor(Color.WHITE);
             usbManager.sendString("#TEXTO\n");
-            logTerminalTx("#TEXTO (Modo Texto Completo activado)");
+            logTerminalTx(getString(R.string.log_mode_text_enabled));
         }
     }
 
@@ -515,10 +515,10 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         }
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipboard != null) {
-            ClipData clip = ClipData.newPlainText("Registro Teclado BIOS", text);
+            ClipData clip = ClipData.newPlainText(getString(R.string.clipboard_label), text);
             clipboard.setPrimaryClip(clip);
             Toast.makeText(this, R.string.copy_log_success, Toast.LENGTH_SHORT).show();
-            updateLastAction("COPIAR CONSOLA");
+            updateLastAction(getString(R.string.action_copy_console));
         }
     }
 
@@ -526,11 +526,11 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
 
     @Override
     public void onUsbConnected(String deviceName) {
-        tvUsbStatus.setText(getString(R.string.usb_connected) + " (" + deviceName + ")");
+        tvUsbStatus.setText(getString(R.string.usb_connected_device, deviceName));
         tvUsbStatus.setTextColor(ContextCompat.getColor(this, R.color.status_green));
         ivUsbIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_green));
-        appendLog("[USB] Conectado exitosamente: " + deviceName + " a 9600 baud.");
-        Toast.makeText(this, "Arduino Conectado (" + deviceName + ")", Toast.LENGTH_SHORT).show();
+        appendLog(getString(R.string.log_usb_connected_msg, deviceName));
+        Toast.makeText(this, getString(R.string.arduino_connected_toast, deviceName), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -539,8 +539,8 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         tvUsbStatus.setTextColor(ContextCompat.getColor(this, R.color.status_red));
         ivUsbIcon.setColorFilter(ContextCompat.getColor(this, R.color.text_muted));
 
-        onPcLinkChanged(false, "Desconectado");
-        appendLog("[USB] Dispositivo USB desconectado.");
+        onPcLinkChanged(false, getString(R.string.pc_link_disconnected));
+        appendLog(getString(R.string.log_usb_disconnected_msg));
     }
 
     @Override
@@ -597,20 +597,20 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 executeFirmwareExport();
             } else {
-                Toast.makeText(this, "Permiso de almacenamiento requerido para exportar.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.storage_permission_required, Toast.LENGTH_LONG).show();
             }
         }
     }
 
     private void executeFirmwareExport() {
         Toast.makeText(this, R.string.firmware_exporting, Toast.LENGTH_SHORT).show();
-        appendLog("[FIRMWARE] Iniciando extracción de firmware a descargas...");
+        appendLog(getString(R.string.log_firmware_extracting));
 
         FirmwareExporter.exportFirmwareAsync(this, new FirmwareExporter.ExportCallback() {
             @Override
             public void onSuccess(String targetDirectory, List<String> exportedFiles) {
                 runOnUiThread(() -> {
-                    String msg = "Firmware exportado a: " + targetDirectory + " (" + exportedFiles.size() + " archivos)";
+                    String msg = getString(R.string.firmware_exported_success, targetDirectory, exportedFiles.size());
                     Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
                     appendLog("[FIRMWARE] " + msg);
                     for (String f : exportedFiles) {
@@ -622,7 +622,7 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
             @Override
             public void onError(String errorMessage) {
                 runOnUiThread(() -> {
-                    String err = "Error al exportar: " + errorMessage;
+                    String err = getString(R.string.firmware_export_error, errorMessage);
                     Toast.makeText(MainActivity.this, err, Toast.LENGTH_LONG).show();
                     appendLog("[FIRMWARE ERROR] " + err);
                 });

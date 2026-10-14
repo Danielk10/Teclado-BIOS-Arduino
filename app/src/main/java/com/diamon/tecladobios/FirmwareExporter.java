@@ -37,7 +37,7 @@ public class FirmwareExporter {
             try {
                 String[] assetFiles = context.getAssets().list(ASSETS_DIR);
                 if (assetFiles == null || assetFiles.length == 0) {
-                    callback.onError("No se encontraron archivos en assets/" + ASSETS_DIR);
+                    callback.onError(context.getString(R.string.firmware_no_assets_found, ASSETS_DIR));
                     return;
                 }
 

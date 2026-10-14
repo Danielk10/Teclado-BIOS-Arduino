@@ -1,71 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Teclado BIOS Arduino</string>
-    <string name="title_app">Teclado BIOS Arduino</string>
+    <!-- App & Header -->
+    <string name="app_name">Arduino BIOS Keyboard</string>
+    <string name="title_app">Arduino BIOS Keyboard</string>
     <string name="title_badge">USB OTG HID</string>
+    <string name="desc_usb_status">USB Status</string>
+    <string name="desc_mouse_bios">UEFI Mouse</string>
+    <string name="desc_dpad_up">Up</string>
+    <string name="desc_dpad_down">Down</string>
+    <string name="desc_dpad_left">Left</string>
+    <string name="desc_dpad_right">Right</string>
 
     <!-- USB Status -->
-    <string name="usb_disconnected">USB: Desconectado</string>
-    <string name="usb_connected">USB: Conectado</string>
-    <string name="usb_connecting">USB: Conectando...</string>
+    <string name="usb_disconnected">USB: Disconnected</string>
+    <string name="usb_connected">USB: Connected</string>
+    <string name="usb_connected_device">USB: Connected (%1$s)</string>
+    <string name="usb_connecting">USB: Connecting...</string>
+    <string name="usb_no_device_detected">No USB serial device detected.</string>
+    <string name="usb_driver_unavailable">Could not obtain driver for USB device.</string>
+    <string name="usb_open_failed">Failed to open USB connection (check OTG permissions).</string>
+    <string name="usb_serial_open_error">Error opening serial port: %1$s</string>
+    <string name="usb_connection_lost">Serial connection lost: %1$s</string>
+    <string name="usb_permission_denied">USB permission denied by user.</string>
+    <string name="no_usb_device">Please connect Arduino Uno with OTG cable.</string>
+    <string name="arduino_connected_toast">Arduino Connected (%1$s)</string>
 
     <!-- PC Link Status -->
-    <string name="pc_link_disconnected">PC: Desconectada</string>
-    <string name="pc_link_connected">PC: Conectada</string>
+    <string name="pc_link_disconnected">PC: Disconnected</string>
+    <string name="pc_link_connected">PC: Connected</string>
+    <string name="pc_link_active">PC Connected (HID Active)</string>
 
     <!-- Last Key -->
-    <string name="last_key_none">Última: -</string>
-    <string name="last_key_format">Última: %1$s</string>
+    <string name="last_key_none">Last: -</string>
+    <string name="last_key_format">Last: %1$s</string>
 
     <!-- Mode -->
-    <string name="mode_bios">MODO BIOS</string>
-    <string name="mode_text">MODO TEXTO</string>
-    <string name="toggle_mode">Cambiar Modo</string>
+    <string name="mode_bios">BIOS MODE</string>
+    <string name="mode_text">TEXT MODE</string>
+    <string name="toggle_mode">Toggle Mode</string>
+    <string name="log_mode_bios_enabled">#BIOS (Fast BIOS Mode activated)</string>
+    <string name="log_mode_text_enabled">#TEXT (Full Text Mode activated)</string>
 
     <!-- Actions -->
-    <string name="download_firmware">Exportar FW</string>
-    <string name="clear_log">Limpiar</string>
-    <string name="send_cmd">Enviar</string>
-    <string name="cmd_hint">Comando o texto manual (#TEST, #RESET, #AYUDA, \?)...</string>
+    <string name="download_firmware">Export Firmware</string>
+    <string name="clear_log">Clear</string>
+    <string name="send_cmd">Send</string>
+    <string name="cmd_hint">Manual command or text (#TEST, #RESET, #HELP, \?)...</string>
+
+    <!-- Mouse Panel -->
+    <string name="label_mouse_title">UEFI MOUSE\nUSB HID</string>
+    <string name="label_touchpad_hint">🖱 UEFI TOUCHPAD: Swipe to move cursor · Tap = Left Click · 2 Fingers = Right Click / Scroll</string>
+    <string name="btn_mouse_left">LEFT CLICK\n(L)</string>
+    <string name="btn_mouse_middle">WHEEL\n(M)</string>
+    <string name="btn_mouse_right">RIGHT CLICK\n(R)</string>
 
     <!-- Cluster Headers -->
-    <string name="cluster_bios_keys">ACCIONES BIOS</string>
-    <string name="cluster_dpad">NAVEGACIÓN</string>
-    <string name="cluster_keyboard">TECLADO QWERTY</string>
-    <string name="cluster_monitor">MONITOR SERIAL EN VIVO</string>
+    <string name="cluster_bios_keys">BIOS ACTIONS</string>
+    <string name="cluster_dpad">NAVIGATION</string>
+    <string name="cluster_keyboard">QWERTY KEYBOARD</string>
+    <string name="cluster_monitor">LIVE SERIAL MONITOR</string>
+    <string name="terminal_label">SERIAL TX/RX 9600 8N1:</string>
+    <string name="terminal_initial_prompt">[SYSTEM] Ready. Connect Arduino via USB OTG... (Long-press to copy)</string>
 
     <!-- Key Labels -->
-    <string name="key_del">SUPR\nDEL</string>
+    <string name="key_del">DEL\nSUPR</string>
     <string name="key_f2">F2\nSETUP</string>
     <string name="key_f11">F11\nBOOT</string>
     <string name="key_f12">F12\nBOOT</string>
-    <string name="key_f10">F10\nGUARDAR</string>
-    <string name="key_esc">ESC\nATRÁS</string>
-    <string name="key_enter">ENTER\nCONFIRMAR</string>
-    <string name="key_tab">TAB\nCAMBIAR</string>
-    <string name="key_space">ESPACIO</string>
-    <string name="key_plus">+\nSUBIR</string>
-    <string name="key_minus">-\nBAJAR</string>
+    <string name="key_f10">F10\nSAVE</string>
+    <string name="key_esc">ESC\nBACK</string>
+    <string name="key_enter">ENTER\nCONFIRM</string>
+    <string name="key_tab">TAB\nNEXT</string>
+    <string name="key_space">SPACE</string>
+    <string name="key_plus">+\nUP</string>
+    <string name="key_minus">-\nDOWN</string>
     <string name="key_cad">CTRL+ALT+DEL</string>
     <string name="key_dpad_ok">OK</string>
-    <string name="key_bs">⌫ BORRAR</string>
-    <string name="key_f1">F1\nAYUDA</string>
+    <string name="key_bs">⌫ DELETE</string>
+    <string name="key_f1">F1\nHELP</string>
     <string name="key_f9">F9\nDEF</string>
-    <string name="key_pgup">RE PÁG</string>
-    <string name="key_pgdn">AV PÁG</string>
+    <string name="key_pgup">PG UP</string>
+    <string name="key_pgdn">PG DN</string>
+
+    <!-- Key Action Display Names -->
+    <string name="action_mouse_left_down">LEFT CLICK (HELD)</string>
+    <string name="action_mouse_left_up">LEFT CLICK (RELEASED)</string>
+    <string name="action_mouse_mid_down">WHEEL / MID (HELD)</string>
+    <string name="action_mouse_mid_up">WHEEL / MID (RELEASED)</string>
+    <string name="action_mouse_right_down">RIGHT CLICK (HELD)</string>
+    <string name="action_mouse_right_up">RIGHT CLICK (RELEASED)</string>
+    <string name="action_wheel_scroll_up">SCROLL WHEEL UP</string>
+    <string name="action_wheel_scroll_down">SCROLL WHEEL DOWN</string>
+    <string name="action_tap_2_fingers">2-FINGER TAP (RIGHT CLICK)</string>
+    <string name="action_tap_1_finger">1-FINGER TAP (LEFT CLICK)</string>
+    <string name="action_copy_console">COPY CONSOLE</string>
+    <string name="action_del">DEL / SUPR</string>
+    <string name="action_f2">F2 SETUP</string>
+    <string name="action_f11">F11 BOOT</string>
+    <string name="action_f12">F12 BOOT</string>
+    <string name="action_f10">F10 SAVE</string>
+    <string name="action_esc">ESC</string>
+    <string name="action_enter">ENTER</string>
+    <string name="action_tab">TAB</string>
+    <string name="action_space">SPACE</string>
+    <string name="action_dpad_up">UP</string>
+    <string name="action_dpad_down">DOWN</string>
+    <string name="action_dpad_left">LEFT</string>
+    <string name="action_dpad_right">RIGHT</string>
+    <string name="action_dpad_ok">OK / ENTER</string>
+    <string name="action_f1">F1 HELP</string>
+    <string name="action_f9">F9 DEFAULT</string>
+    <string name="action_pgup">PG UP</string>
+    <string name="action_pgdn">PG DN</string>
+    <string name="action_bs">DELETE</string>
 
     <!-- Diagnostics and tools -->
     <string name="btn_test">#TEST</string>
     <string name="btn_reset">#RESET</string>
-    <string name="btn_query">"? ESTADO"</string>
-    <string name="copy_log">Copiar consola</string>
-    <string name="copy_log_success">📋 ¡Registro copiado al portapapeles!</string>
-    <string name="copy_log_empty">La consola está vacía</string>
+    <string name="btn_query">"? STATUS"</string>
+    <string name="copy_log">Copy console</string>
+    <string name="copy_log_success">📋 Log copied to clipboard!</string>
+    <string name="copy_log_empty">Console log is empty</string>
 
-    <!-- Messages -->
-    <string name="firmware_exporting">Exportando archivos de firmware...</string>
-    <string name="firmware_exported_success">Firmware exportado exitosamente en: %1$s</string>
-    <string name="firmware_export_error">Error al exportar firmware: %1$s</string>
-    <string name="usb_permission_denied">Permiso USB denegado por el usuario.</string>
-    <string name="no_usb_device">Conecte el Arduino Uno con cable OTG.</string>
+    <!-- Messages / Toast / Storage -->
+    <string name="firmware_exporting">Exporting firmware files...</string>
+    <string name="firmware_exported_success">Firmware exported to: %1$s (%2$d files)</string>
+    <string name="firmware_export_error">Error exporting firmware: %1$s</string>
+    <string name="firmware_no_assets_found">No files found in assets/%1$s</string>
+    <string name="storage_permission_required">Storage permission required to export.</string>
+    <string name="clipboard_label">BIOS Keyboard Log</string>
+
+    <!-- Terminal Logs -->
+    <string name="log_usb_connected_msg">[USB] Connected successfully: %1$s at 9600 baud.</string>
+    <string name="log_usb_disconnected_msg">[USB] USB device disconnected.</string>
+    <string name="log_firmware_extracting">[FIRMWARE] Starting firmware extraction to downloads...</string>
 </resources>

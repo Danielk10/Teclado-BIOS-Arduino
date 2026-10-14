@@ -83,7 +83,7 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
                         }
                     } else {
                         Log.w(TAG, "USB Permission denied");
-                        listener.onError("Permiso USB denegado por el usuario.");
+                        listener.onError(context.getString(R.string.usb_permission_denied));
                     }
                 }
             } else if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
@@ -134,7 +134,7 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
 
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(usbManager);
         if (availableDrivers.isEmpty()) {
-            listener.onError("No se detectó ningún dispositivo USB serial.");
+            listener.onError(context.getString(R.string.usb_no_device_detected));
             return;
         }
 
@@ -164,13 +164,13 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
             driver = availableDrivers.get(0);
         }
         if (driver == null) {
-            listener.onError("No se pudo obtener el controlador para el dispositivo USB.");
+            listener.onError(context.getString(R.string.usb_driver_unavailable));
             return;
         }
 
         UsbDeviceConnection connection = usbManager.openDevice(driver.getDevice());
         if (connection == null) {
-            listener.onError("Fallo al abrir la conexión USB (revisa permisos OTG).");
+            listener.onError(context.getString(R.string.usb_open_failed));
             return;
         }
 
@@ -200,7 +200,7 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
         } catch (IOException e) {
             Log.e(TAG, "Error opening serial port", e);
             disconnect();
-            listener.onError("Error al abrir puerto serial: " + e.getMessage());
+            listener.onError(context.getString(R.string.usb_serial_open_error, e.getMessage()));
         }
     }
 
@@ -322,7 +322,7 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
         Log.e(TAG, "Serial IO Manager error", e);
         mainHandler.post(() -> {
             disconnect();
-            listener.onError("Conexión serial perdida: " + e.getMessage());
+            listener.onError(context.getString(R.string.usb_connection_lost, e.getMessage()));
         });
     }
 
@@ -339,7 +339,7 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
                 || line.contains("LINK=1")) {
             if (!isPcLinked) {
                 isPcLinked = true;
-                listener.onPcLinkChanged(true, "PC Conectada (HID Activo)");
+                listener.onPcLinkChanged(true, context.getString(R.string.pc_link_active));
             }
         }
         // Check for disconnected PC signals
@@ -351,7 +351,7 @@ public class UsbSerialManager implements SerialInputOutputManager.Listener {
                 || line.contains("LINK=0")) {
             if (isPcLinked) {
                 isPcLinked = false;
-                listener.onPcLinkChanged(false, "PC Desconectada");
+                listener.onPcLinkChanged(false, context.getString(R.string.pc_link_disconnected));
             }
         }
     }
