@@ -132,29 +132,27 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginStart="6dp">
+            android:layout_marginStart="5dp">
 
-            <!-- Mode Toggle Button (Compact height 28dp, comfortable width 125dp for full text) -->
+            <!-- Mode Toggle Button -->
             <Button
                 android:id="@+id/btnToggleMode"
                 style="@style/HeaderButton"
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"
-                android:minWidth="125dp"
                 android:background="@drawable/bg_key_action"
                 android:text="@string/mode_bios"
-                android:layout_marginEnd="5dp" />
+                android:layout_marginEnd="4dp" />
 
-            <!-- Descargar Firmware Button (Compact height 28dp, comfortable width 135dp for full text) -->
+            <!-- Descargar Firmware Button -->
             <Button
                 android:id="@+id/btnDownloadFirmware"
                 style="@style/HeaderButton"
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"
-                android:minWidth="135dp"
                 android:background="@drawable/bg_key_standard"
                 android:drawableStart="@drawable/ic_download"
-                android:drawablePadding="4dp"
+                android:drawablePadding="3dp"
                 android:text="@string/download_firmware" />
         </LinearLayout>
     </LinearLayout>
