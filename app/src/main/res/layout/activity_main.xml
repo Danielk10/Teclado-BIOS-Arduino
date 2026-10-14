@@ -11,10 +11,10 @@
     <!-- 1. HEADER / STATUS BAR -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="42dp"
+        android:layout_height="36dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingHorizontal="6dp">
+        android:paddingHorizontal="4dp">
 
         <!-- Left status & title container (scrolls horizontally if narrow to never crowd buttons) -->
         <HorizontalScrollView
@@ -53,7 +53,7 @@
                 <LinearLayout
                     android:id="@+id/chipUsbStatus"
                     android:layout_width="wrap_content"
-                    android:layout_height="28dp"
+                    android:layout_height="26dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_status_chip"
@@ -77,14 +77,14 @@
                         android:textSize="10sp"
                         android:textStyle="bold"
                         android:singleLine="true"
-                        android:layout_marginStart="5dp" />
+                        android:layout_marginStart="4dp" />
                 </LinearLayout>
 
                 <!-- PC Link LED Indicator -->
                 <LinearLayout
                     android:id="@+id/chipPcLink"
                     android:layout_width="wrap_content"
-                    android:layout_height="28dp"
+                    android:layout_height="26dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_status_chip"
@@ -106,14 +106,14 @@
                         android:textSize="10sp"
                         android:textStyle="bold"
                         android:singleLine="true"
-                        android:layout_marginStart="5dp" />
+                        android:layout_marginStart="4dp" />
                 </LinearLayout>
 
                 <!-- Last Sent Key Chip -->
                 <TextView
                     android:id="@+id/tvLastKey"
                     android:layout_width="wrap_content"
-                    android:layout_height="28dp"
+                    android:layout_height="26dp"
                     android:background="@drawable/bg_status_chip"
                     android:gravity="center"
                     android:text="@string/last_key_none"
@@ -132,29 +132,29 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginStart="8dp">
+            android:layout_marginStart="6dp">
 
-            <!-- Mode Toggle Button (Longer/wider so full text 'Modo: BIOS Rápido' fits without cutting off) -->
+            <!-- Mode Toggle Button (Compact height 28dp, comfortable width 125dp for full text) -->
             <Button
                 android:id="@+id/btnToggleMode"
                 style="@style/HeaderButton"
                 android:layout_width="wrap_content"
-                android:layout_height="34dp"
-                android:minWidth="150dp"
+                android:layout_height="28dp"
+                android:minWidth="125dp"
                 android:background="@drawable/bg_key_action"
                 android:text="@string/mode_bios"
-                android:layout_marginEnd="6dp" />
+                android:layout_marginEnd="5dp" />
 
-            <!-- Descargar Firmware Button -->
+            <!-- Descargar Firmware Button (Compact height 28dp, comfortable width 135dp for full text) -->
             <Button
                 android:id="@+id/btnDownloadFirmware"
                 style="@style/HeaderButton"
                 android:layout_width="wrap_content"
-                android:layout_height="34dp"
-                android:minWidth="165dp"
+                android:layout_height="28dp"
+                android:minWidth="135dp"
                 android:background="@drawable/bg_key_standard"
                 android:drawableStart="@drawable/ic_download"
-                android:drawablePadding="5dp"
+                android:drawablePadding="4dp"
                 android:text="@string/download_firmware" />
         </LinearLayout>
     </LinearLayout>
