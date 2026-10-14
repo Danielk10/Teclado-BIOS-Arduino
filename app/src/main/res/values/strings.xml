@@ -35,8 +35,8 @@
     <string name="last_key_format">Last: %1$s</string>
 
     <!-- Mode -->
-    <string name="mode_bios">BIOS MODE</string>
-    <string name="mode_text">TEXT MODE</string>
+    <string name="mode_bios">Mode: Fast BIOS</string>
+    <string name="mode_text">Mode: Free Text</string>
     <string name="toggle_mode">Toggle Mode</string>
     <string name="log_mode_bios_enabled">#BIOS (Fast BIOS Mode activated)</string>
     <string name="log_mode_text_enabled">#TEXT (Full Text Mode activated)</string>
@@ -115,8 +115,8 @@
     <string name="action_bs">DELETE</string>
 
     <!-- Diagnostics and tools -->
-    <string name="btn_test">#TEST</string>
-    <string name="btn_reset">#RESET</string>
+    <string name="btn_test">#PIN TEST</string>
+    <string name="btn_reset">#RESET USB</string>
     <string name="btn_query">"? STATUS"</string>
     <string name="copy_log">Copy console</string>
     <string name="copy_log_success">📋 Log copied to clipboard!</string>
