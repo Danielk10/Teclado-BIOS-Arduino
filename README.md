@@ -5,6 +5,7 @@
 [![Min SDK](https://img.shields.io/badge/Min%20SDK-23%20(Marshmallow)-orange.svg)](https://developer.android.com)
 [![Target SDK](https://img.shields.io/badge/Target%20SDK-37-brightgreen.svg)](https://developer.android.com)
 [![Hardware](https://img.shields.io/badge/Hardware-Arduino%20Uno%20%7C%20Nano%20%7C%20Pro%20Micro-red.svg)](https://www.arduino.cc/)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/danielpdiai)
 
 Una aplicación Android diseñada para convertir tu smartphone o tablet en un teclado físico virtual y consola de control para acceder a la **BIOS / UEFI**, sistemas operativos heredados o terminales embebidas mediante una placa **Arduino** conectada por **USB OTG**.
 
@@ -312,3 +313,11 @@ Para evitar el agotamiento de espacio en entornos con almacenamiento limitado (p
 Este proyecto está bajo la Licencia Apache 2.0. Consulta el archivo [LICENSE](LICENSE) para más detalles.
 
 Copyright (c) 2026 Daniel Diamon.
+
+---
+
+## ☕ Apoyo y Donaciones
+
+Si este proyecto te ha sido de utilidad y deseas apoyar el desarrollo continuo:
+
+[![Buy Me A Coffee](https://img.buymeacoffee.com/button-api/?text=Cómprame%20un%20café&emoji=☕&slug=danielpdiai&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff)](https://buymeacoffee.com/danielpdiai)
