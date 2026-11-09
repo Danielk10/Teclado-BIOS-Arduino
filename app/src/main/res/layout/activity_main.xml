@@ -134,15 +134,15 @@
             android:gravity="center_vertical"
             android:layout_marginStart="5dp">
 
-            <!-- Mode Toggle Button -->
+            <!-- Shift / Symbols Toggle Button -->
             <Button
-                android:id="@+id/btnToggleMode"
+                android:id="@+id/btnShiftToggle"
                 style="@style/HeaderButton"
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"
                 android:minWidth="110dp"
                 android:background="@drawable/bg_key_action"
-                android:text="@string/mode_bios"
+                android:text="@string/shift_off"
                 android:layout_marginEnd="5dp" />
 
             <!-- Descargar Firmware Button -->
@@ -254,7 +254,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- 3. MAIN KEYBOARD AREA (3 CLUSTERS: BIOS, DPAD, QWERTY) -->
+    <!-- 3. MAIN KEYBOARD AREA (QWERTY LEFT, BIOS CENTER, D-PAD RIGHT) -->
     <LinearLayout
         android:id="@+id/layoutKeyboardArea"
         android:layout_width="match_parent"
@@ -263,7 +263,130 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <!-- CLUSTER 1: DEDICATED BIOS ACTION KEYS (Left) -->
+        <!-- CLUSTER 1: FULL QWERTY KEYBOARD (Left) -->
+        <LinearLayout
+            android:id="@+id/clusterQwerty"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5.4"
+            android:orientation="vertical"
+            android:background="@drawable/bg_cluster_card"
+            android:padding="3dp"
+            android:layout_marginEnd="2dp">
+
+            <!-- Numbers Row: 1-0 (shift symbols shown on keys) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button android:id="@+id/key_1" style="@style/KeyboardKey" android:text="1" android:textSize="9sp" />
+                <Button android:id="@+id/key_2" style="@style/KeyboardKey" android:text="2" android:textSize="9sp" />
+                <Button android:id="@+id/key_3" style="@style/KeyboardKey" android:text="3" android:textSize="9sp" />
+                <Button android:id="@+id/key_4" style="@style/KeyboardKey" android:text="4" android:textSize="9sp" />
+                <Button android:id="@+id/key_5" style="@style/KeyboardKey" android:text="5" android:textSize="9sp" />
+                <Button android:id="@+id/key_6" style="@style/KeyboardKey" android:text="6" android:textSize="9sp" />
+                <Button android:id="@+id/key_7" style="@style/KeyboardKey" android:text="7" android:textSize="9sp" />
+                <Button android:id="@+id/key_8" style="@style/KeyboardKey" android:text="8" android:textSize="9sp" />
+                <Button android:id="@+id/key_9" style="@style/KeyboardKey" android:text="9" android:textSize="9sp" />
+                <Button android:id="@+id/key_0" style="@style/KeyboardKey" android:text="0" android:textSize="9sp" />
+            </LinearLayout>
+
+            <!-- Row: Q W E R T Y U I O P -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button android:id="@+id/key_q" style="@style/KeyboardKey" android:text="Q" />
+                <Button android:id="@+id/key_w" style="@style/KeyboardKey" android:text="W" />
+                <Button android:id="@+id/key_e" style="@style/KeyboardKey" android:text="E" />
+                <Button android:id="@+id/key_r" style="@style/KeyboardKey" android:text="R" />
+                <Button android:id="@+id/key_t" style="@style/KeyboardKey" android:text="T" />
+                <Button android:id="@+id/key_y" style="@style/KeyboardKey" android:text="Y" />
+                <Button android:id="@+id/key_u" style="@style/KeyboardKey" android:text="U" />
+                <Button android:id="@+id/key_i" style="@style/KeyboardKey" android:text="I" />
+                <Button android:id="@+id/key_o" style="@style/KeyboardKey" android:text="O" />
+                <Button android:id="@+id/key_p" style="@style/KeyboardKey" android:text="P" />
+            </LinearLayout>
+
+            <!-- Row: A S D F G H J K L Ñ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button android:id="@+id/key_a" style="@style/KeyboardKey" android:text="A" />
+                <Button android:id="@+id/key_s" style="@style/KeyboardKey" android:text="S" />
+                <Button android:id="@+id/key_d" style="@style/KeyboardKey" android:text="D" />
+                <Button android:id="@+id/key_f" style="@style/KeyboardKey" android:text="F" />
+                <Button android:id="@+id/key_g" style="@style/KeyboardKey" android:text="G" />
+                <Button android:id="@+id/key_h" style="@style/KeyboardKey" android:text="H" />
+                <Button android:id="@+id/key_j" style="@style/KeyboardKey" android:text="J" />
+                <Button android:id="@+id/key_k" style="@style/KeyboardKey" android:text="K" />
+                <Button android:id="@+id/key_l" style="@style/KeyboardKey" android:text="L" />
+                <Button android:id="@+id/key_nn" style="@style/KeyboardKey" android:text="Ñ" />
+            </LinearLayout>
+
+            <!-- Row: Z X C V B N M , . / -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button android:id="@+id/key_z" style="@style/KeyboardKey" android:text="Z" />
+                <Button android:id="@+id/key_x" style="@style/KeyboardKey" android:text="X" />
+                <Button android:id="@+id/key_c" style="@style/KeyboardKey" android:text="C" />
+                <Button android:id="@+id/key_v" style="@style/KeyboardKey" android:text="V" />
+                <Button android:id="@+id/key_b" style="@style/KeyboardKey" android:text="B" />
+                <Button android:id="@+id/key_n" style="@style/KeyboardKey" android:text="N" />
+                <Button android:id="@+id/key_m" style="@style/KeyboardKey" android:text="M" />
+                <Button android:id="@+id/key_comma" style="@style/KeyboardKey" android:text="," android:textSize="10sp" />
+                <Button android:id="@+id/key_dot" style="@style/KeyboardKey" android:text="." android:textSize="10sp" />
+                <Button android:id="@+id/key_slash" style="@style/KeyboardKey" android:text="/" android:textSize="10sp" />
+            </LinearLayout>
+
+            <!-- Row: SHIFT, `, -, =, [, ], \, ;, ', BACKSPACE -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/key_shift"
+                    style="@style/KeyboardKey"
+                    android:layout_weight="1.2"
+                    android:background="@drawable/bg_key_action"
+                    android:text="@string/key_shift"
+                    android:textSize="8sp"
+                    android:lineSpacingMultiplier="0.85" />
+
+                <Button android:id="@+id/key_grave" style="@style/KeyboardKey" android:text="`" android:textSize="9sp" />
+                <Button android:id="@+id/key_minus" style="@style/KeyboardKey" android:text="-" android:textSize="10sp" />
+                <Button android:id="@+id/key_equal" style="@style/KeyboardKey" android:text="=" android:textSize="10sp" />
+                <Button android:id="@+id/key_lbracket" style="@style/KeyboardKey" android:text="[" android:textSize="10sp" />
+                <Button android:id="@+id/key_rbracket" style="@style/KeyboardKey" android:text="]" android:textSize="10sp" />
+                <Button android:id="@+id/key_backslash" style="@style/KeyboardKey" android:text="&#92;" android:textSize="10sp" />
+                <Button android:id="@+id/key_semicolon" style="@style/KeyboardKey" android:text=";" android:textSize="10sp" />
+                <Button android:id="@+id/key_apostrophe" style="@style/KeyboardKey" android:text="'" android:textSize="10sp" />
+
+                <Button
+                    android:id="@+id/key_bs"
+                    style="@style/KeyboardKey"
+                    android:layout_weight="1.2"
+                    android:text="@string/key_bs"
+                    android:textColor="#FFFFFF"
+                    android:textSize="7.5sp"
+                    android:lineSpacingMultiplier="0.85" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- CLUSTER 2: DEDICATED BIOS ACTION KEYS (Center) -->
         <LinearLayout
             android:id="@+id/clusterBios"
             android:layout_width="0dp"
@@ -272,7 +395,7 @@
             android:orientation="vertical"
             android:background="@drawable/bg_cluster_card"
             android:padding="3dp"
-            android:layout_marginEnd="2dp">
+            android:layout_marginHorizontal="2dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -284,7 +407,7 @@
                 android:gravity="center"
                 android:layout_marginBottom="2dp" />
 
-            <!-- Row 1: DEL (SUPR) & F2 (Highlight BIOS Entry) -->
+            <!-- Row 1: DEL, F2, F1 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -296,18 +419,25 @@
                     android:id="@+id/btnKeyDel"
                     style="@style/BiosKeyButton.Alert"
                     android:layout_weight="1"
-                    android:layout_marginEnd="2dp"
+                    android:layout_marginHorizontal="1dp"
                     android:text="@string/key_del" />
 
                 <Button
                     android:id="@+id/btnKeyF2"
                     style="@style/BiosKeyButton.Alert"
                     android:layout_weight="1"
-                    android:layout_marginStart="2dp"
+                    android:layout_marginHorizontal="1dp"
                     android:text="@string/key_f2" />
+
+                <Button
+                    android:id="@+id/btnKeyF1"
+                    style="@style/BiosKeyButton.Action"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="1dp"
+                    android:text="@string/key_f1" />
             </LinearLayout>
 
-            <!-- Row 2: F11 & F12 (Boot Menu Keys) -->
+            <!-- Row 2: F11, F12, F9 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -319,18 +449,25 @@
                     android:id="@+id/btnKeyF11"
                     style="@style/BiosKeyButton.Action"
                     android:layout_weight="1"
-                    android:layout_marginEnd="2dp"
+                    android:layout_marginHorizontal="1dp"
                     android:text="@string/key_f11" />
 
                 <Button
                     android:id="@+id/btnKeyF12"
                     style="@style/BiosKeyButton.Action"
                     android:layout_weight="1"
-                    android:layout_marginStart="2dp"
+                    android:layout_marginHorizontal="1dp"
                     android:text="@string/key_f12" />
+
+                <Button
+                    android:id="@+id/btnKeyF9"
+                    style="@style/BiosKeyButton.Action"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="1dp"
+                    android:text="@string/key_f9" />
             </LinearLayout>
 
-            <!-- Row 3: F10 & ESC (Save / Cancel) -->
+            <!-- Row 3: F10, ESC, PGUP -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -342,18 +479,25 @@
                     android:id="@+id/btnKeyF10"
                     style="@style/BiosKeyButton.Action"
                     android:layout_weight="1"
-                    android:layout_marginEnd="2dp"
+                    android:layout_marginHorizontal="1dp"
                     android:text="@string/key_f10" />
 
                 <Button
                     android:id="@+id/btnKeyEsc"
                     style="@style/BiosKeyButton"
                     android:layout_weight="1"
-                    android:layout_marginStart="2dp"
+                    android:layout_marginHorizontal="1dp"
                     android:text="@string/key_esc" />
+
+                <Button
+                    android:id="@+id/btnKeyPgUp"
+                    style="@style/BiosKeyButton"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="1dp"
+                    android:text="@string/key_pgup" />
             </LinearLayout>
 
-            <!-- Row 4: ENTER & TAB -->
+            <!-- Row 4: ENTER, TAB, PGDN -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -364,16 +508,23 @@
                 <Button
                     android:id="@+id/btnKeyEnter"
                     style="@style/BiosKeyButton.Action"
-                    android:layout_weight="1.2"
-                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="1dp"
                     android:text="@string/key_enter" />
 
                 <Button
                     android:id="@+id/btnKeyTab"
                     style="@style/BiosKeyButton"
-                    android:layout_weight="0.8"
-                    android:layout_marginStart="2dp"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="1dp"
                     android:text="@string/key_tab" />
+
+                <Button
+                    android:id="@+id/btnKeyPgDn"
+                    style="@style/BiosKeyButton"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="1dp"
+                    android:text="@string/key_pgdn" />
             </LinearLayout>
 
             <!-- Row 5: SPACE, +, - -->
@@ -381,34 +532,75 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="2dp">
 
                 <Button
                     android:id="@+id/btnKeySpace"
                     style="@style/BiosKeyButton"
-                    android:layout_weight="1.2"
-                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1.3"
+                    android:layout_marginHorizontal="1dp"
                     android:text="@string/key_space" />
 
                 <Button
                     android:id="@+id/btnKeyPlus"
                     style="@style/BiosKeyButton"
-                    android:layout_weight="0.9"
+                    android:layout_weight="0.85"
                     android:layout_marginHorizontal="1dp"
                     android:text="@string/key_plus"
-                    android:textSize="10sp" />
+                    android:textSize="9sp" />
 
                 <Button
                     android:id="@+id/btnKeyMinus"
                     style="@style/BiosKeyButton"
-                    android:layout_weight="0.9"
-                    android:layout_marginStart="2dp"
+                    android:layout_weight="0.85"
+                    android:layout_marginHorizontal="1dp"
                     android:text="@string/key_minus"
-                    android:textSize="10sp" />
+                    android:textSize="9sp" />
+            </LinearLayout>
+
+            <!-- Row 6: CTRL+ALT+DEL, PIN TEST, USB RESET -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnKeyCad"
+                    style="@style/BiosKeyButton.Alert"
+                    android:layout_weight="1.2"
+                    android:layout_marginHorizontal="1dp"
+                    android:text="@string/key_cad"
+                    android:textColor="#FFFFFF"
+                    android:textSize="6.5sp"
+                    android:singleLine="true" />
+
+                <Button
+                    android:id="@+id/btnTestHardware"
+                    style="@style/BiosKeyButton"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="1dp"
+                    android:background="@drawable/bg_key_test"
+                    android:text="@string/btn_test"
+                    android:textColor="#FFFFFF"
+                    android:textSize="6.5sp"
+                    android:singleLine="true" />
+
+                <Button
+                    android:id="@+id/btnResetUsb"
+                    style="@style/BiosKeyButton"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="1dp"
+                    android:background="@drawable/bg_key_reset"
+                    android:text="@string/btn_reset"
+                    android:textColor="#FFFFFF"
+                    android:textSize="6.5sp"
+                    android:singleLine="true" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- CLUSTER 2: DIRECTIONAL D-PAD (Center) -->
+        <!-- CLUSTER 3: DIRECTIONAL D-PAD + OK (Right) -->
         <LinearLayout
             android:id="@+id/clusterDpad"
             android:layout_width="0dp"
@@ -417,7 +609,7 @@
             android:orientation="vertical"
             android:background="@drawable/bg_cluster_card"
             android:padding="3dp"
-            android:layout_marginHorizontal="2dp">
+            android:layout_marginStart="2dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -534,186 +726,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
                 </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- CLUSTER 3: FULL QWERTY KEYBOARD (Right) -->
-        <LinearLayout
-            android:id="@+id/clusterQwerty"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5.4"
-            android:orientation="vertical"
-            android:background="@drawable/bg_cluster_card"
-            android:padding="3dp"
-            android:layout_marginStart="2dp">
-
-            <!-- Numbers Row 1-0 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button android:id="@+id/key_1" style="@style/KeyboardKey" android:text="1" />
-                <Button android:id="@+id/key_2" style="@style/KeyboardKey" android:text="2" />
-                <Button android:id="@+id/key_3" style="@style/KeyboardKey" android:text="3" />
-                <Button android:id="@+id/key_4" style="@style/KeyboardKey" android:text="4" />
-                <Button android:id="@+id/key_5" style="@style/KeyboardKey" android:text="5" />
-                <Button android:id="@+id/key_6" style="@style/KeyboardKey" android:text="6" />
-                <Button android:id="@+id/key_7" style="@style/KeyboardKey" android:text="7" />
-                <Button android:id="@+id/key_8" style="@style/KeyboardKey" android:text="8" />
-                <Button android:id="@+id/key_9" style="@style/KeyboardKey" android:text="9" />
-                <Button android:id="@+id/key_0" style="@style/KeyboardKey" android:text="0" />
-            </LinearLayout>
-
-            <!-- Row 1: Q W E R T Y U I O P -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button android:id="@+id/key_q" style="@style/KeyboardKey" android:text="Q" />
-                <Button android:id="@+id/key_w" style="@style/KeyboardKey" android:text="W" />
-                <Button android:id="@+id/key_e" style="@style/KeyboardKey" android:text="E" />
-                <Button android:id="@+id/key_r" style="@style/KeyboardKey" android:text="R" />
-                <Button android:id="@+id/key_t" style="@style/KeyboardKey" android:text="T" />
-                <Button android:id="@+id/key_y" style="@style/KeyboardKey" android:text="Y" />
-                <Button android:id="@+id/key_u" style="@style/KeyboardKey" android:text="U" />
-                <Button android:id="@+id/key_i" style="@style/KeyboardKey" android:text="I" />
-                <Button android:id="@+id/key_o" style="@style/KeyboardKey" android:text="O" />
-                <Button android:id="@+id/key_p" style="@style/KeyboardKey" android:text="P" />
-            </LinearLayout>
-
-            <!-- Row 2: A S D F G H J K L Ñ -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button android:id="@+id/key_a" style="@style/KeyboardKey" android:text="A" />
-                <Button android:id="@+id/key_s" style="@style/KeyboardKey" android:text="S" />
-                <Button android:id="@+id/key_d" style="@style/KeyboardKey" android:text="D" />
-                <Button android:id="@+id/key_f" style="@style/KeyboardKey" android:text="F" />
-                <Button android:id="@+id/key_g" style="@style/KeyboardKey" android:text="G" />
-                <Button android:id="@+id/key_h" style="@style/KeyboardKey" android:text="H" />
-                <Button android:id="@+id/key_j" style="@style/KeyboardKey" android:text="J" />
-                <Button android:id="@+id/key_k" style="@style/KeyboardKey" android:text="K" />
-                <Button android:id="@+id/key_l" style="@style/KeyboardKey" android:text="L" />
-                <Button android:id="@+id/key_nn" style="@style/KeyboardKey" android:text="Ñ" />
-            </LinearLayout>
-
-            <!-- Row 3: Z X C V B N M, CAD, BS -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button android:id="@+id/key_z" style="@style/KeyboardKey" android:text="Z" />
-                <Button android:id="@+id/key_x" style="@style/KeyboardKey" android:text="X" />
-                <Button android:id="@+id/key_c" style="@style/KeyboardKey" android:text="C" />
-                <Button android:id="@+id/key_v" style="@style/KeyboardKey" android:text="V" />
-                <Button android:id="@+id/key_b" style="@style/KeyboardKey" android:text="B" />
-                <Button android:id="@+id/key_n" style="@style/KeyboardKey" android:text="N" />
-                <Button android:id="@+id/key_m" style="@style/KeyboardKey" android:text="M" />
-
-                <!-- CAD (Ctrl+Alt+Del) Shortcut Key -->
-                <Button
-                    android:id="@+id/btnKeyCad"
-                    style="@style/KeyboardKey"
-                    android:layout_weight="1.6"
-                    android:background="@drawable/bg_key_bios_alert"
-                    android:text="@string/key_cad"
-                    android:textColor="#FFFFFF"
-                    android:textSize="8sp"
-                    android:singleLine="true" />
-
-                <!-- Backspace Key -->
-                <Button
-                    android:id="@+id/key_bs"
-                    style="@style/KeyboardKey"
-                    android:layout_weight="1.4"
-                    android:text="@string/key_bs"
-                    android:textColor="#FFFFFF"
-                    android:textSize="8.5sp"
-                    android:singleLine="true" />
-            </LinearLayout>
-
-            <!-- Row 4: F1 Help, F9 Defaults, Page Navigation & USB Diagnostics -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.95"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnKeyF1"
-                    style="@style/KeyboardKey"
-                    android:layout_weight="1"
-                    android:text="@string/key_f1"
-                    android:textColor="#FFFFFF"
-                    android:textSize="8.5sp"
-                    android:lineSpacingMultiplier="0.85" />
-
-                <Button
-                    android:id="@+id/btnKeyF9"
-                    style="@style/KeyboardKey"
-                    android:layout_weight="1"
-                    android:text="@string/key_f9"
-                    android:textColor="#FFFFFF"
-                    android:textSize="8.5sp"
-                    android:lineSpacingMultiplier="0.85" />
-
-                <Button
-                    android:id="@+id/btnKeyPgUp"
-                    style="@style/KeyboardKey"
-                    android:layout_weight="1"
-                    android:text="@string/key_pgup"
-                    android:textColor="#FFFFFF"
-                    android:textSize="8.5sp"
-                    android:lineSpacingMultiplier="0.85" />
-
-                <Button
-                    android:id="@+id/btnKeyPgDn"
-                    style="@style/KeyboardKey"
-                    android:layout_weight="1"
-                    android:text="@string/key_pgdn"
-                    android:textColor="#FFFFFF"
-                    android:textSize="8.5sp"
-                    android:lineSpacingMultiplier="0.85" />
-
-                <Button
-                    android:id="@+id/btnTestHardware"
-                    style="@style/KeyboardKey"
-                    android:layout_weight="1.25"
-                    android:background="@drawable/bg_key_test"
-                    android:text="@string/btn_test"
-                    android:textColor="#FFFFFF"
-                    android:textSize="7.5sp"
-                    android:singleLine="true" />
-
-                <Button
-                    android:id="@+id/btnResetUsb"
-                    style="@style/KeyboardKey"
-                    android:layout_weight="1.15"
-                    android:background="@drawable/bg_key_reset"
-                    android:text="@string/btn_reset"
-                    android:textColor="#FFFFFF"
-                    android:textSize="7.5sp"
-                    android:singleLine="true" />
-
-                <Button
-                    android:id="@+id/btnQueryStatus"
-                    style="@style/KeyboardKey"
-                    android:layout_weight="1.0"
-                    android:background="@drawable/bg_key_query"
-                    android:text="@string/btn_query"
-                    android:textColor="#FFFFFF"
-                    android:textSize="7.5sp"
-                    android:singleLine="true" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

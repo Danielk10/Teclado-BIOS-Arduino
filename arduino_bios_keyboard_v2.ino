@@ -1,5 +1,5 @@
 /*
- * Arduino UNO USB HID Composite Keyboard + Mouse - VERSION 2.0
+ * Arduino UNO USB HID Composite Keyboard + Mouse - VERSION 2.1
  * Compatible con BIOS / UEFI, Boot Menu, GRUB, Windows, Linux, Android y Shell.
  *
  * Características Version 2.0:
@@ -24,6 +24,14 @@
  *    - Modo BIOS rápido (s=Supr, u=Arriba, d=Abajo, e=Enter, x=Esc, 2=F2, 0=F10, etc.)
  *    - Modo Texto completo y etiquetas especiales entre corchetes [F1]-[F12], [UP], [CAD].
  *    - Comandos de diagnóstico #TEXTO, #BIOS, #AYUDA, #TEST, #RESET y '?'.
+ * 6. Version 2.1 (compatible con la app Android 1.1.0):
+ *    - Recompilada con V-USB 20121206 y la corrección del vector INT0
+ *      (USB_INTR_VECTOR -> __vector_1) descrita en DIAGNOSTICO_PROBLEMA_VUSB.md.
+ *    - Se conserva la identidad USB 16c0:27dc y los mismos report descriptors
+ *      (teclado 63 bytes / ratón 62 bytes), por lo que la BIOS/UEFI la detecta
+ *      exactamente igual que la version 2.0.
+ *    - Sin cambios de protocolo: la app usa #TEXTO y las etiquetas [BS], [CAD],
+ *      [PGUP], [PGDN], etc. para escribir texto y navegar.
  */
 
 #include "UsbKeyboard.h"
@@ -131,7 +139,7 @@ bool shouldDebounce(uint8_t keycode) {
 // Ayuda e Información de Diagnóstico
 // ---------------------------------------------------------------------------
 void printHelp() {
-  Serial.println(F("\n================ AYUDA TECLADO + RATON V2.0 ================"));
+  Serial.println(F("\n================ AYUDA TECLADO + RATON V2.1 ================"));
   Serial.println(F("MODO ACTUAL: "));
   Serial.println(currentMode == MODE_FULL_TEXT ? F("-> MODO TEXTO COMPLETO") : F("-> MODO BIOS RAPIDO"));
   
@@ -480,7 +488,7 @@ void setup() {
   }
 
   Serial.println(F("\n==========================================================="));
-  Serial.println(F("ARDUINO USB KEYBOARD + MOUSE v2.0 (TECLADO + RATON + BIOS)"));
+  Serial.println(F("ARDUINO USB KEYBOARD + MOUSE v2.1 (TECLADO + RATON + BIOS)"));
   Serial.println(F("==========================================================="));
   printStatus();
   printHelp();

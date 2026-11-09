@@ -37,6 +37,8 @@ Una aplicación Android diseñada para convertir tu smartphone o tablet en un te
   - Toque con 2 dedos: Clic Derecho.
   - Deslizamiento vertical con 2 dedos: Rueda de desplazamiento (Scroll Wheel `#MW:dz`).
 - **3 Botones Físicos de Ratón Verificados:** Clic Izquierdo (`L`), Rueda Central (`M`) y Clic Derecho (`R`) con soporte completo de clic simple y arrastre continuo (`#MD:L/R/M` y `#MU:L/R/M`).
+- **Teclado QWERTY Completo con Capa Shift:** Todas las letras, números y signos funcionan como en un teclado físico. El botón `MAYÚS` (en la cabecera o en el propio teclado) conmuta una capa persistente de símbolos (`!@#$%^&*()`, `_-+=`, `{}[]`, `|`, `:`, `"`, `<`, `>`, `?`, `~`) y permite volver a las letras con otra pulsación. La app activa automáticamente el modo `#TEXTO` del firmware para que letras como `e`, `r`, `d`, `u`, `l`, `s`, `x`, `f`, `b`, `2` o `0` escriban texto normal en lugar de disparar los atajos rápidos de BIOS.
+- **Distribución Ergonómica:** Teclado QWERTY a la izquierda, teclas de acción BIOS en el centro y D-Pad de navegación con `OK/ENTER` a la derecha.
 - **Teclas Dedicadas para BIOS/UEFI:** Botones táctiles específicos para navegación rápida: `SUPR/DEL`, `F2 SETUP`, `F11 BOOT`, `F12 BOOT`, `F10 GUARDAR`, `ESC`, `ENTER`, `TAB`, `ESPACIO`, `+ (SUBIR)`, `- (BAJAR)`, `F1 AYUDA`, `F9 DEFAULT`, `RE PÁG` y `AV PÁG`.
 - **D-Pad de Navegación Direccional:** Cruzeta con flechas `UP`, `DOWN`, `LEFT`, `RIGHT` y botón central `OK/ENTER`.
 - **Consola Serie Ampliada con Copiado Fácil:** Altura expandida para visualización clara de logs TX/RX, con botón dedicado de copiado al portapapeles y soporte de **pulsación sostenida** sobre el texto para copiar instantáneamente todo el registro.
@@ -182,7 +184,7 @@ El microcontrolador ATmega328P trabaja nativamente a **5V** suministrados por el
 
 Una vez ensamblado el circuito, antes de conectar la PC puedes comprobar que las resistencias y cables estén perfectos:
 1. Conecta el Arduino al teléfono y abre la app **Teclado BIOS Arduino**.
-2. Presiona el botón **`#TEST PINES`** (o envía `#TEST` en la consola).
+2. Presiona el botón **`#TEST`** (o envía `#TEST` en la consola).
 3. El microcontrolador medirá el voltaje de las líneas en reposo y responderá:
    * **`ESTADO ELECTRICO: CORRECTO`** $\to$ Cable blanco en alto (~3.6V por zener) y verde en bajo (0V). ¡Listo para conectar a la PC!
    * **`ERROR: CABLES INVERTIDOS`** $\to$ El cable verde y blanco están al revés (intercambia D2 y D4).
@@ -290,12 +292,16 @@ El archivo APK resultante se generará en:
 3. **Conectar el Arduino al teléfono** utilizando el adaptador USB OTG.
 4. Conceder el **permiso de acceso USB** cuando el sistema Android lo solicite.
 5. Iniciar la aplicación **Teclado BIOS Arduino**:
-   - Seleccionar el dispositivo detectado en la lista.
-   - Elegir la velocidad en baudios (por defecto: `115200` o `9600`).
-   - Pulsar **Conectar**.
+   - La app detecta el Arduino y se conecta automáticamente a `9600 8N1`.
+   - Aceptar el permiso de acceso USB cuando Android lo solicite.
+   - Esperar a que la consola confirme el modo de texto (`#TEXTO`); la app lo activa sola tras el arranque de la placa.
 6. Conectar la salida del Arduino a la PC y encender el equipo:
    - Pulsar `DEL` o `F2` repetidamente desde la app para ingresar a la configuración de la BIOS/UEFI.
    - Navegar con las flechas direccionales táctiles y configurar los parámetros necesarios.
+7. Para escribir texto o contraseñas:
+   - Usar el teclado QWERTY de la izquierda.
+   - Pulsar `MAYÚS` para acceder a los símbolos de la segunda fila de cada tecla y volver a pulsarlo para regresar a las letras.
+   - La tecla `Ñ` se envía en la posición física de `;`/`:`, de modo que un teclado en español produce `ñ` y `Ñ`.
 
 ---
 

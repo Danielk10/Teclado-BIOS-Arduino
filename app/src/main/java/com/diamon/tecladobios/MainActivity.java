@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.TextUtils;
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
     private View viewPcLinkLed;
     private TextView tvPcLinkStatus;
     private TextView tvLastKey;
-    private Button btnToggleMode;
+    private Button btnShiftToggle;
     private Button btnDownloadFirmware;
 
     // UI References - Mouse Panel
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
     private Button btnKeyDel, btnKeyF2, btnKeyF11, btnKeyF12, btnKeyF10, btnKeyEsc;
     private Button btnKeyEnter, btnKeyTab, btnKeySpace, btnKeyPlus, btnKeyMinus, btnKeyCad;
     private Button btnKeyF1, btnKeyF9, btnKeyPgUp, btnKeyPgDn;
+    private Button keyShift;
     private ImageButton btnDpadUp, btnDpadDown, btnDpadLeft, btnDpadRight;
     private Button btnDpadCenter;
 
@@ -73,7 +76,17 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
     // Controllers & State
     private UsbSerialManager usbManager;
     private Vibrator vibrator;
-    private boolean isBiosMode = true; // true = BIOS Rápido, false = Texto Completo
+    private final Handler uiHandler = new Handler(Looper.getMainLooper());
+    private final Runnable enterTextModeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (usbManager == null || !usbManager.isConnected()) return;
+            firmwareTextMode = usbManager.sendString("#TEXTO\n");
+            logTerminalTx("#TEXTO");
+        }
+    };
+    private boolean isShiftActive = false;
+    private boolean firmwareTextMode = false;
 
     // Touchpad state
     private float lastTouchX = 0f;
@@ -105,12 +118,18 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         if (usbManager != null) {
             usbManager.register();
             usbManager.connect();
+            if (usbManager.isConnected()) {
+                // The Arduino may have been reset while the app was paused.
+                uiHandler.removeCallbacks(enterTextModeRunnable);
+                uiHandler.postDelayed(enterTextModeRunnable, 500);
+            }
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        uiHandler.removeCallbacks(enterTextModeRunnable);
         if (usbManager != null) {
             usbManager.unregister();
         }
@@ -142,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         viewPcLinkLed = findViewById(R.id.viewPcLinkLed);
         tvPcLinkStatus = findViewById(R.id.tvPcLinkStatus);
         tvLastKey = findViewById(R.id.tvLastKey);
-        btnToggleMode = findViewById(R.id.btnToggleMode);
+        btnShiftToggle = findViewById(R.id.btnShiftToggle);
         btnDownloadFirmware = findViewById(R.id.btnDownloadFirmware);
 
         // Mouse Panel
@@ -164,6 +183,11 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         btnKeyPlus = findViewById(R.id.btnKeyPlus);
         btnKeyMinus = findViewById(R.id.btnKeyMinus);
         btnKeyCad = findViewById(R.id.btnKeyCad);
+        btnKeyF1 = findViewById(R.id.btnKeyF1);
+        btnKeyF9 = findViewById(R.id.btnKeyF9);
+        btnKeyPgUp = findViewById(R.id.btnKeyPgUp);
+        btnKeyPgDn = findViewById(R.id.btnKeyPgDn);
+        keyShift = findViewById(R.id.key_shift);
 
         // D-Pad
         btnDpadUp = findViewById(R.id.btnDpadUp);
@@ -179,17 +203,12 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         btnSendCmd = findViewById(R.id.btnSendCmd);
         btnClearLog = findViewById(R.id.btnClearLog);
         btnCopyLog = findViewById(R.id.btnCopyLog);
-
-        // Extra Function & Nav Keys
-        btnKeyF1 = findViewById(R.id.btnKeyF1);
-        btnKeyF9 = findViewById(R.id.btnKeyF9);
-        btnKeyPgUp = findViewById(R.id.btnKeyPgUp);
-        btnKeyPgDn = findViewById(R.id.btnKeyPgDn);
     }
 
     private void setupListeners() {
-        // Mode switch
-        btnToggleMode.setOnClickListener(v -> toggleMode());
+        // Shift / symbols layer (header button and keyboard key stay in sync)
+        btnShiftToggle.setOnClickListener(v -> toggleShift());
+        keyShift.setOnClickListener(v -> toggleShift());
 
         // Firmware download
         btnDownloadFirmware.setOnClickListener(v -> checkPermissionAndExportFirmware());
@@ -252,32 +271,32 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
             return false;
         });
 
-        // Dedicated BIOS keys
-        btnKeyDel.setOnClickListener(v -> sendKeyAction(getString(R.string.action_del), "s", "[DEL]"));
-        btnKeyF2.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f2), "2", "[F2]"));
-        btnKeyF11.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f11), "f", "[F11]"));
-        btnKeyF12.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f12), "b", "[F12]"));
-        btnKeyF10.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f10), "0", "[F10]"));
-        btnKeyEsc.setOnClickListener(v -> sendKeyAction(getString(R.string.action_esc), "x", "[ESC]"));
-        btnKeyEnter.setOnClickListener(v -> sendKeyAction(getString(R.string.action_enter), "e", "[ENTER]"));
-        btnKeyTab.setOnClickListener(v -> sendKeyAction(getString(R.string.action_tab), "\t", "[TAB]"));
-        btnKeySpace.setOnClickListener(v -> sendKeyAction(getString(R.string.action_space), " ", " "));
-        btnKeyPlus.setOnClickListener(v -> sendKeyAction("+", "+", "+"));
-        btnKeyMinus.setOnClickListener(v -> sendKeyAction("-", "-", "-"));
-        btnKeyCad.setOnClickListener(v -> sendKeyAction(getString(R.string.key_cad), "[CAD]", "[CAD]"));
+        // Dedicated BIOS keys (special tags always work, regardless of firmware mode)
+        btnKeyDel.setOnClickListener(v -> sendTagAction(getString(R.string.action_del), "[DEL]"));
+        btnKeyF2.setOnClickListener(v -> sendTagAction(getString(R.string.action_f2), "[F2]"));
+        btnKeyF11.setOnClickListener(v -> sendTagAction(getString(R.string.action_f11), "[F11]"));
+        btnKeyF12.setOnClickListener(v -> sendTagAction(getString(R.string.action_f12), "[F12]"));
+        btnKeyF10.setOnClickListener(v -> sendTagAction(getString(R.string.action_f10), "[F10]"));
+        btnKeyEsc.setOnClickListener(v -> sendTagAction(getString(R.string.action_esc), "[ESC]"));
+        btnKeyEnter.setOnClickListener(v -> sendTagAction(getString(R.string.action_enter), "[ENTER]"));
+        btnKeyTab.setOnClickListener(v -> sendTagAction(getString(R.string.action_tab), "[TAB]"));
+        btnKeySpace.setOnClickListener(v -> sendTagAction(getString(R.string.action_space), "[SPACE]"));
+        btnKeyPlus.setOnClickListener(v -> sendTextAction("+", "+"));
+        btnKeyMinus.setOnClickListener(v -> sendTextAction("-", "-"));
+        btnKeyCad.setOnClickListener(v -> sendTagAction(getString(R.string.action_cad), "[CAD]"));
 
         // D-Pad
-        btnDpadUp.setOnClickListener(v -> sendKeyAction(getString(R.string.action_dpad_up), "u", "[UP]"));
-        btnDpadDown.setOnClickListener(v -> sendKeyAction(getString(R.string.action_dpad_down), "d", "[DOWN]"));
-        btnDpadLeft.setOnClickListener(v -> sendKeyAction(getString(R.string.action_dpad_left), "l", "[LEFT]"));
-        btnDpadRight.setOnClickListener(v -> sendKeyAction(getString(R.string.action_dpad_right), "r", "[RIGHT]"));
-        btnDpadCenter.setOnClickListener(v -> sendKeyAction(getString(R.string.action_dpad_ok), "e", "[ENTER]"));
+        btnDpadUp.setOnClickListener(v -> sendTagAction(getString(R.string.action_dpad_up), "[UP]"));
+        btnDpadDown.setOnClickListener(v -> sendTagAction(getString(R.string.action_dpad_down), "[DOWN]"));
+        btnDpadLeft.setOnClickListener(v -> sendTagAction(getString(R.string.action_dpad_left), "[LEFT]"));
+        btnDpadRight.setOnClickListener(v -> sendTagAction(getString(R.string.action_dpad_right), "[RIGHT]"));
+        btnDpadCenter.setOnClickListener(v -> sendTagAction(getString(R.string.action_dpad_ok), "[ENTER]"));
 
         // Extra Functions & Page Navigation
-        if (btnKeyF1 != null) btnKeyF1.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f1), "[F1]", "[F1]"));
-        if (btnKeyF9 != null) btnKeyF9.setOnClickListener(v -> sendKeyAction(getString(R.string.action_f9), "[F9]", "[F9]"));
-        if (btnKeyPgUp != null) btnKeyPgUp.setOnClickListener(v -> sendKeyAction(getString(R.string.action_pgup), "[PGUP]", "[PGUP]"));
-        if (btnKeyPgDn != null) btnKeyPgDn.setOnClickListener(v -> sendKeyAction(getString(R.string.action_pgdn), "[PGDN]", "[PGDN]"));
+        btnKeyF1.setOnClickListener(v -> sendTagAction(getString(R.string.action_f1), "[F1]"));
+        btnKeyF9.setOnClickListener(v -> sendTagAction(getString(R.string.action_f9), "[F9]"));
+        btnKeyPgUp.setOnClickListener(v -> sendTagAction(getString(R.string.action_pgup), "[PGUP]"));
+        btnKeyPgDn.setOnClickListener(v -> sendTagAction(getString(R.string.action_pgdn), "[PGDN]"));
 
         // QWERTY Keys
         setupQwertyKeys();
@@ -295,13 +314,6 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
             usbManager.sendString("#RESET\n");
             updateLastAction("#RESET");
             logTerminalTx("#RESET");
-        });
-
-        findViewById(R.id.btnQueryStatus).setOnClickListener(v -> {
-            triggerHaptic();
-            usbManager.sendString("?\n");
-            updateLastAction("?");
-            logTerminalTx("?");
         });
 
         // Terminal Actions (Clear, Copy, and Long-Click to Copy)
@@ -403,16 +415,20 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
     }
 
     private void setupQwertyKeys() {
-        // Numbers 1-0
-        int[] numIds = {R.id.key_1, R.id.key_2, R.id.key_3, R.id.key_4, R.id.key_5,
-                R.id.key_6, R.id.key_7, R.id.key_8, R.id.key_9, R.id.key_0};
-        String[] numChars = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
-        for (int i = 0; i < numIds.length; i++) {
-            final String ch = numChars[i];
-            findViewById(numIds[i]).setOnClickListener(v -> sendKeyAction(ch, ch, ch));
-        }
+        // Number row: unshifted digits and their shifted symbols.
+        bindTextKey(R.id.key_1, "1", "!");
+        bindTextKey(R.id.key_2, "2", "@");
+        bindTextKey(R.id.key_3, "3", "#");
+        bindTextKey(R.id.key_4, "4", "$");
+        bindTextKey(R.id.key_5, "5", "%");
+        bindTextKey(R.id.key_6, "6", "^");
+        bindTextKey(R.id.key_7, "7", "&");
+        bindTextKey(R.id.key_8, "8", "*");
+        bindTextKey(R.id.key_9, "9", "(");
+        bindTextKey(R.id.key_0, "0", ")");
 
-        // QWERTY Letters
+        // QWERTY letters. The firmware uses HID physical key positions, so the
+        // Spanish Ñ key is mapped to the semicolon position (";" / ":").
         int[] letterIds = {
                 R.id.key_q, R.id.key_w, R.id.key_e, R.id.key_r, R.id.key_t,
                 R.id.key_y, R.id.key_u, R.id.key_i, R.id.key_o, R.id.key_p,
@@ -427,39 +443,126 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
                 "z", "x", "c", "v", "b", "n", "m"
         };
         for (int i = 0; i < letterIds.length; i++) {
-            final String letter = letters[i];
-            findViewById(letterIds[i]).setOnClickListener(v -> sendKeyAction(letter.toUpperCase(), letter, letter));
+            if (letterIds[i] == R.id.key_nn) {
+                bindTextKey(letterIds[i], ";", ":", "Ñ", "ñ", "Ñ");
+            } else {
+                bindLetterKey(letterIds[i], letters[i]);
+            }
         }
 
-        // Backspace
-        findViewById(R.id.key_bs).setOnClickListener(v -> sendKeyAction(getString(R.string.action_bs), "\b", "[BS]"));
+        // Bottom punctuation row.
+        bindTextKey(R.id.key_grave, "`", "~");
+        bindTextKey(R.id.key_minus, "-", "_");
+        bindTextKey(R.id.key_equal, "=", "+");
+        bindTextKey(R.id.key_lbracket, "[", "{");
+        bindTextKey(R.id.key_rbracket, "]", "}");
+        bindTextKey(R.id.key_backslash, "\\", "|");
+        bindTextKey(R.id.key_semicolon, ";", ":");
+        bindTextKey(R.id.key_apostrophe, "'", "\"");
+        bindTextKey(R.id.key_comma, ",", "<");
+        bindTextKey(R.id.key_dot, ".", ">");
+        bindTextKey(R.id.key_slash, "/", "?");
+
+        // Backspace is a special tag, so it works in every firmware mode.
+        findViewById(R.id.key_bs).setOnClickListener(
+                v -> sendTagAction(getString(R.string.action_bs), "[BS]"));
     }
 
-    private void sendKeyAction(String displayName, String biosCmd, String textCmd) {
+    private void bindTextKey(int viewId, String normal, String shifted) {
+        bindTextKey(viewId, normal, shifted, normal + "\n" + shifted, normal, shifted);
+    }
+
+    private void bindTextKey(int viewId, String normal, String shifted,
+                             String label, String displayNormal, String displayShifted) {
+        Button key = findViewById(viewId);
+        key.setText(label);
+        key.setOnClickListener(v -> {
+            String value = isShiftActive ? shifted : normal;
+            sendTextAction(isShiftActive ? displayShifted : displayNormal, value);
+        });
+    }
+
+    private void bindLetterKey(int viewId, String letter) {
+        Button key = findViewById(viewId);
+        key.setText(letter.toUpperCase(Locale.US));
+        key.setOnClickListener(v -> {
+            String value = isShiftActive ? letter.toUpperCase(Locale.US) : letter;
+            sendTextAction(value, value);
+        });
+    }
+
+    private void sendTagAction(String displayName, String tag) {
         triggerHaptic();
         updateLastAction(displayName);
-
-        String cmdToSend = isBiosMode ? biosCmd : textCmd;
-        usbManager.sendString(cmdToSend);
-        logTerminalTx(cmdToSend);
+        usbManager.sendString(tag);
+        logTerminalTx(tag);
     }
 
-    private void toggleMode() {
+    private void sendTextAction(String displayName, String text) {
         triggerHaptic();
-        isBiosMode = !isBiosMode;
-        if (isBiosMode) {
-            btnToggleMode.setText(R.string.mode_bios);
-            btnToggleMode.setBackgroundResource(R.drawable.bg_key_action);
-            btnToggleMode.setTextColor(Color.WHITE);
-            usbManager.sendString("#BIOS\n");
-            logTerminalTx(getString(R.string.log_mode_bios_enabled));
-        } else {
-            btnToggleMode.setText(R.string.mode_text);
-            btnToggleMode.setBackgroundResource(R.drawable.bg_key_bios_alert);
-            btnToggleMode.setTextColor(Color.WHITE);
-            usbManager.sendString("#TEXTO\n");
-            logTerminalTx(getString(R.string.log_mode_text_enabled));
+        updateLastAction(displayName);
+        ensureTextMode();
+        String payload = encodeForFirmware(text);
+        usbManager.sendString(payload);
+        logTerminalTx(text);
+    }
+
+    private void ensureTextMode() {
+        if (firmwareTextMode) return;
+        firmwareTextMode = usbManager.sendString("#TEXTO\n");
+        logTerminalTx("#TEXTO");
+    }
+
+    /**
+     * The firmware reserves '[', '#' and '?' for tags and status commands.
+     * An unknown tag is echoed literally as "[tag]". Sending a backspace as
+     * the first tag character erases the opening bracket before the character
+     * is typed, and a final [BS] erases the closing bracket.
+     *
+     * '[' needs its own form because a second '[' restarts the tag parser,
+     * so the empty tag "[]" types a bracket and one [BS] removes the ']'.
+     */
+    private String encodeForFirmware(String text) {
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            switch (c) {
+                case '[':
+                    out.append("[]");
+                    out.append("[BS]");
+                    break;
+                case '#':
+                    out.append("[\b#]");
+                    out.append("[BS]");
+                    break;
+                case '?':
+                    out.append("[\b?]");
+                    out.append("[BS]");
+                    break;
+                default:
+                    out.append(c);
+                    break;
+            }
         }
+        return out.toString();
+    }
+
+    private void toggleShift() {
+        setShiftActive(!isShiftActive);
+    }
+
+    private void setShiftActive(boolean active) {
+        isShiftActive = active;
+        btnShiftToggle.setText(active ? R.string.shift_on : R.string.shift_off);
+        btnShiftToggle.setBackgroundResource(active
+                ? R.drawable.bg_key_bios_alert : R.drawable.bg_key_action);
+        keyShift.setText(active ? R.string.key_shift_on : R.string.key_shift);
+        keyShift.setBackgroundResource(active
+                ? R.drawable.bg_key_bios_alert : R.drawable.bg_key_action);
+
+        triggerHaptic();
+        updateLastAction(getString(active
+                ? R.string.action_shift_on : R.string.action_shift_off));
     }
 
     private void sendManualCommand() {
@@ -468,6 +571,11 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
             triggerHaptic();
             usbManager.sendString(cmd + "\n");
             logTerminalTx(cmd);
+            if (cmd.equalsIgnoreCase("#TEXTO")) {
+                firmwareTextMode = true;
+            } else if (cmd.equalsIgnoreCase("#BIOS")) {
+                firmwareTextMode = false;
+            }
             etManualCmd.setText("");
         }
     }
@@ -531,6 +639,14 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         ivUsbIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_green));
         appendLog(getString(R.string.log_usb_connected_msg, deviceName));
         Toast.makeText(this, getString(R.string.arduino_connected_toast, deviceName), Toast.LENGTH_SHORT).show();
+
+        // The sketch boots in Quick BIOS mode. Wait for the bootloader to
+        // finish, then force Full Text mode (and retry in case the first
+        // command was sent while the board was still starting up).
+        firmwareTextMode = false;
+        uiHandler.removeCallbacks(enterTextModeRunnable);
+        uiHandler.postDelayed(enterTextModeRunnable, 2500);
+        uiHandler.postDelayed(enterTextModeRunnable, 6000);
     }
 
     @Override
@@ -539,6 +655,8 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
         tvUsbStatus.setTextColor(ContextCompat.getColor(this, R.color.status_red));
         ivUsbIcon.setColorFilter(ContextCompat.getColor(this, R.color.text_muted));
 
+        uiHandler.removeCallbacks(enterTextModeRunnable);
+        firmwareTextMode = false;
         onPcLinkChanged(false, getString(R.string.pc_link_disconnected));
         appendLog(getString(R.string.log_usb_disconnected_msg));
     }
@@ -568,6 +686,11 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
     @Override
     public void onDataReceived(String data) {
         appendLog("[RX] " + data.trim());
+        if (data.contains("MODO TEXTO COMPLETO")) {
+            firmwareTextMode = true;
+        } else if (data.contains("MODO BIOS RAPIDO")) {
+            firmwareTextMode = false;
+        }
     }
 
     @Override

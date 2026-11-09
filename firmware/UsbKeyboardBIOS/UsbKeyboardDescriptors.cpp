@@ -1,0 +1,115 @@
+/*
+ * UsbKeyboardDescriptors.cpp - Descriptores USB del dispositivo compuesto.
+ *
+ * Los bytes se extrajeron del firmware de referencia
+ * (arduino_bios_keyboard_v2.hex) para conservar exactamente la misma
+ * identidad USB: 16c0:27dc, "Arduino" / "BIOS Kbd Mouse", dos interfaces
+ * HID de arranque y los mismos report descriptors de 63 y 62 bytes.
+ *
+ * Vive en su propio .cpp para que el generador de prototipos de Arduino no
+ * redeclare usbFunctionDescriptor() con enlace C++ (usbdrv.h la declara
+ * extern "C").
+ */
+
+#include <Arduino.h>
+#include <avr/pgmspace.h>
+
+extern "C" {
+#include "usbdrv.h"
+}
+
+/* ------------------------- Descriptores USB (flash) ----------------------- */
+
+static const uchar biosUsbDeviceDescriptor[18] PROGMEM = {
+    0x12, 0x01, 0x10, 0x01, 0x00, 0x00, 0x00, 0x08, 0x16, 0xc0, 0xdc, 0x27,
+    0x00, 0x01, 0x01, 0x02, 0x00, 0x01,
+};
+
+static const uchar biosUsbConfigDescriptor[59] PROGMEM = {
+    /* Config: 2 interfaces, 100 mA, bus powered + remote wakeup */
+    0x09, 0x02, 0x3b, 0x00, 0x02, 0x01, 0x00, 0xa0, 0x32,
+    /* Interfaz 0: HID boot teclado */
+    0x09, 0x04, 0x00, 0x00, 0x01, 0x03, 0x01, 0x01, 0x00,
+    /* HID descriptor: report de 63 bytes */
+    0x09, 0x21, 0x01, 0x01, 0x00, 0x01, 0x22, 0x3f, 0x00,
+    /* EP1 IN, interrupt, 8 bytes, 10 ms */
+    0x07, 0x05, 0x81, 0x03, 0x08, 0x00, 0x0a,
+    /* Interfaz 1: HID boot ratón */
+    0x09, 0x04, 0x01, 0x00, 0x01, 0x03, 0x01, 0x02, 0x00,
+    /* HID descriptor: report de 62 bytes */
+    0x09, 0x21, 0x01, 0x01, 0x00, 0x01, 0x22, 0x3e, 0x00,
+    /* EP3 IN, interrupt, 8 bytes, 10 ms */
+    0x07, 0x05, 0x83, 0x03, 0x08, 0x00, 0x0a,
+};
+
+static const uchar usbHidDescriptorKeyboard[9] PROGMEM = {
+    0x09, 0x21, 0x01, 0x01, 0x00, 0x01, 0x22, 0x3f, 0x00,
+};
+
+static const uchar usbHidDescriptorMouse[9] PROGMEM = {
+    0x09, 0x21, 0x01, 0x01, 0x00, 0x01, 0x22, 0x3e, 0x00,
+};
+
+/* Teclado: 8 modificadores, 1 byte reservado, 6 keycodes y LED output. */
+static const uchar biosUsbKeyboardReport[63] PROGMEM = {
+    0x05, 0x01, 0x09, 0x06, 0xa1, 0x01, 0x05, 0x07, 0x19, 0xe0, 0x29, 0xe7,
+    0x15, 0x00, 0x25, 0x01, 0x75, 0x01, 0x95, 0x08, 0x81, 0x02, 0x95, 0x01,
+    0x75, 0x08, 0x81, 0x01, 0x95, 0x05, 0x75, 0x01, 0x05, 0x08, 0x19, 0x01,
+    0x29, 0x05, 0x91, 0x02, 0x95, 0x01, 0x75, 0x03, 0x91, 0x01, 0x95, 0x06,
+    0x75, 0x08, 0x15, 0x00, 0x25, 0x65, 0x05, 0x07, 0x19, 0x00, 0x29, 0x65,
+    0x81, 0x00, 0xc0,
+};
+
+/* Ratón: 3 botones + 5 bits de relleno, X, Y y rueda. */
+static const uchar biosUsbMouseReport[62] PROGMEM = {
+    0x05, 0x01, 0x09, 0x02, 0xa1, 0x01, 0x09, 0x01, 0xa1, 0x00, 0x05, 0x09,
+    0x19, 0x01, 0x29, 0x03, 0x15, 0x00, 0x25, 0x01, 0x95, 0x03, 0x75, 0x01,
+    0x81, 0x02, 0x95, 0x01, 0x75, 0x05, 0x81, 0x01, 0x05, 0x01, 0x09, 0x30,
+    0x09, 0x31, 0x15, 0x81, 0x25, 0x7f, 0x75, 0x08, 0x95, 0x02, 0x81, 0x06,
+    0x09, 0x38, 0x15, 0x81, 0x25, 0x7f, 0x75, 0x08, 0x95, 0x01, 0x81, 0x06,
+    0xc0, 0xc0,
+};
+
+/* ----------------------- Descriptores en tiempo real ---------------------- */
+
+usbMsgLen_t usbFunctionDescriptor(usbRequest_t *rq)
+{
+    uchar type  = rq->wValue.bytes[1];
+    uchar index = rq->wIndex.bytes[0];
+
+    if (type == USBDESCR_DEVICE) {
+        usbMsgPtr = (uchar *)biosUsbDeviceDescriptor;
+        return sizeof(biosUsbDeviceDescriptor);
+    }
+    if (type == USBDESCR_CONFIG) {
+        usbMsgPtr = (uchar *)biosUsbConfigDescriptor;
+        return sizeof(biosUsbConfigDescriptor);
+    }
+    if (type == USBDESCR_HID) {
+        if (index == 0) {
+            usbMsgPtr = (uchar *)usbHidDescriptorKeyboard;
+        } else {
+            usbMsgPtr = (uchar *)usbHidDescriptorMouse;
+        }
+        return 9;
+    }
+    if (type == USBDESCR_HID_REPORT) {
+        if (index == 0) {
+            usbMsgPtr = (uchar *)biosUsbKeyboardReport;
+            return sizeof(biosUsbKeyboardReport);
+        }
+        usbMsgPtr = (uchar *)biosUsbMouseReport;
+        return sizeof(biosUsbMouseReport);
+    }
+    return 0;   /* descriptor no soportado: el host recibe STALL */
+}
+
+/* --------------------------- Hooks requeridos ---------------------------- */
+/* Las peticiones estándar (descriptores, dirección, configuración) las
+ * resuelve usbdrv.c antes de llegar aquí. No hay peticiones de clase que
+ * atender: se responde STALL. */
+usbMsgLen_t usbFunctionSetup(uchar data[8])
+{
+    (void)data;
+    return 0;
+}

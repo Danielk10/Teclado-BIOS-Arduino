@@ -34,12 +34,13 @@
     <string name="last_key_none">Last: -</string>
     <string name="last_key_format">Last: %1$s</string>
 
-    <!-- Mode -->
-    <string name="mode_bios">Mode: Fast BIOS</string>
-    <string name="mode_text">Mode: Free Text</string>
-    <string name="toggle_mode">Toggle Mode</string>
-    <string name="log_mode_bios_enabled">#BIOS (Fast BIOS Mode activated)</string>
-    <string name="log_mode_text_enabled">#TEXT (Full Text Mode activated)</string>
+    <!-- Shift / Symbols Layer -->
+    <string name="shift_off">SHIFT: OFF</string>
+    <string name="shift_on">SHIFT: ON</string>
+    <string name="key_shift">SHIFT\nOFF</string>
+    <string name="key_shift_on">SHIFT\nON</string>
+    <string name="action_shift_off">SHIFT OFF (LETTERS)</string>
+    <string name="action_shift_on">SHIFT ON (SYMBOLS)</string>
 
     <!-- Actions -->
     <string name="download_firmware">Export Firmware</string>
@@ -69,14 +70,14 @@
     <string name="key_f12">F12\nBOOT</string>
     <string name="key_f10">F10\nSAVE</string>
     <string name="key_esc">ESC\nBACK</string>
-    <string name="key_enter">ENTER\nCONFIRM</string>
+    <string name="key_enter">ENTER\nOK</string>
     <string name="key_tab">TAB\nNEXT</string>
     <string name="key_space">SPACE</string>
     <string name="key_plus">+\nUP</string>
     <string name="key_minus">-\nDOWN</string>
-    <string name="key_cad">CTRL+ALT+DEL</string>
+    <string name="key_cad">CTRL\nALT\nDEL</string>
     <string name="key_dpad_ok">OK</string>
-    <string name="key_bs">⌫ DELETE</string>
+    <string name="key_bs">⌫\nDEL</string>
     <string name="key_f1">F1\nHELP</string>
     <string name="key_f9">F9\nDEF</string>
     <string name="key_pgup">PG UP</string>
@@ -103,6 +104,7 @@
     <string name="action_enter">ENTER</string>
     <string name="action_tab">TAB</string>
     <string name="action_space">SPACE</string>
+    <string name="action_cad">CTRL+ALT+DEL</string>
     <string name="action_dpad_up">UP</string>
     <string name="action_dpad_down">DOWN</string>
     <string name="action_dpad_left">LEFT</string>
@@ -115,9 +117,8 @@
     <string name="action_bs">DELETE</string>
 
     <!-- Diagnostics and tools -->
-    <string name="btn_test">#PIN TEST</string>
-    <string name="btn_reset">#RESET USB</string>
-    <string name="btn_query">"? STATUS"</string>
+    <string name="btn_test">#TEST</string>
+    <string name="btn_reset">#RESET</string>
     <string name="copy_log">Copy console</string>
     <string name="copy_log_success">📋 Log copied to clipboard!</string>
     <string name="copy_log_empty">Console log is empty</string>
