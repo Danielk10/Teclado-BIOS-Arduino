@@ -205,6 +205,9 @@ Teclado-BIOS-Arduino/
 ├── DIAGNOSTICO_PROBLEMA_VUSB.md # Guía técnica de diagnóstico V-USB e interrupciones
 ├── arduino_bios_keyboard_v2.ino # Código fuente Arduino del firmware unificado v2
 ├── arduino_bios_keyboard_v2.hex # Firmware compilado listo para flashear
+├── firmware/
+│   ├── build.sh               # Recompila el firmware y copia el .hex al repo
+│   └── UsbKeyboardBIOS/       # Librería USB HID compuesta (V-USB): teclado + ratón
 ├── build.gradle               # Build script raíz con redirección a /tmp
 ├── gradle.properties          # Memoria JVM y variables de entorno
 ├── local.properties           # Ruta al SDK de Android
@@ -282,6 +285,20 @@ Para limpiar la compilación:
 
 El archivo APK resultante se generará en:
 `/tmp/teclado-bios/app-build/outputs/apk/debug/app-debug.apk`
+
+### Compilar el firmware del Arduino
+
+El firmware se compila con `arduino-cli` (core `arduino:avr`) y la librería
+`firmware/UsbKeyboardBIOS`:
+
+```bash
+arduino-cli core install arduino:avr   # solo la primera vez
+./firmware/build.sh
+```
+
+El script recompila `arduino_bios_keyboard_v2.ino` y actualiza el `.hex` en la
+raíz y en `app/src/main/assets/firmware/`. El firmware resultante conserva la
+identidad USB `16c0:27dc` y los report descriptors de la versión 2.0.
 
 ---
 
