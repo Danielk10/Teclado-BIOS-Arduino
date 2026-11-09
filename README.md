@@ -41,7 +41,7 @@ Una aplicación Android diseñada para convertir tu smartphone o tablet en un te
 - **Distribución Ergonómica:** Teclas de acción BIOS a la izquierda, teclado QWERTY en el centro y D-Pad de navegación con `OK/ENTER` a la derecha.
 - **Teclas Dedicadas para BIOS/UEFI:** Botones táctiles específicos para navegación rápida: `SUPR/DEL`, `F2 SETUP`, `F11 BOOT`, `F12 BOOT`, `F10 GUARDAR`, `ESC`, `ENTER`, `TAB`, `ESPACIO`, `+ (SUBIR)`, `- (BAJAR)`, `F1 AYUDA`, `F9 DEFAULT`, `RE PÁG` y `AV PÁG`.
 - **D-Pad de Navegación Direccional:** Cruzeta con flechas `UP`, `DOWN`, `LEFT`, `RIGHT` y botón central `OK/ENTER`.
-- **Consola Serie Ampliada con Copiado Fácil:** Altura expandida para visualización clara de logs TX/RX, con botón dedicado de copiado al portapapeles y soporte de **pulsación sostenida** sobre el texto para copiar instantáneamente todo el registro. El campo de comandos se edita **directamente sobre la consola** (sin editor a pantalla completa) y se envía con `ENVIAR` o con la tecla de acción del teclado.
+- **Consola Serie Ampliada con Copiado Fácil:** Altura expandida para visualización clara de logs TX/RX, con botón dedicado de copiado al portapapeles y soporte de **pulsación sostenida** sobre el texto para copiar instantáneamente todo el registro. El campo de comandos se edita **directamente sobre la consola** (sin editor a pantalla completa) y se envía con `ENVIAR` o con la tecla de acción del teclado. El teclado permanece abierto mientras se escribe y después de enviar: el registro no roba el foco y la caja de comandos queda visible por encima del teclado.
 - **Sin Dependencias de Nube ni Bloatware:** Aplicación 100% offline, ligera y respetuosa con los recursos.
 
 ---

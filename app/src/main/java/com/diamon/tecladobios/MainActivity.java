@@ -138,6 +138,12 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
     private void applyImmersiveFullscreen() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (getWindow().getInsetsController() != null) {
+                // No volver a ocultar las barras con el teclado en pantalla visible:
+                // en varios fabricantes eso descarta el IME y cierra el teclado.
+                WindowInsets insets = getWindow().getDecorView().getRootWindowInsets();
+                if (insets != null && insets.isVisible(WindowInsets.Type.ime())) {
+                    return;
+                }
                 getWindow().getInsetsController().hide(
                         WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
                 getWindow().getInsetsController().setSystemBarsBehavior(
@@ -577,6 +583,7 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
                 firmwareTextMode = false;
             }
             etManualCmd.setText("");
+            etManualCmd.requestFocus();
         }
     }
 
@@ -610,7 +617,15 @@ public class MainActivity extends AppCompatActivity implements UsbSerialManager.
                 tvSerialLog.setText(current.substring(current.length() - 3000));
             }
 
-            scrollSerialLog.post(() -> scrollSerialLog.fullScroll(View.FOCUS_DOWN));
+            scrollSerialLog.post(() -> {
+                // OJO: fullScroll(FOCUS_DOWN) roba el foco al TextView del log
+                // (es seleccionable y por tanto focusable) y eso cierra el teclado
+                // del campo de comandos mientras se escribe. Desplazamos sin foco.
+                android.view.View child = scrollSerialLog.getChildAt(0);
+                if (child != null) {
+                    scrollSerialLog.scrollTo(0, child.getBottom());
+                }
+            });
         });
     }
 

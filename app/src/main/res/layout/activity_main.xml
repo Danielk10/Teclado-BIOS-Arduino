@@ -773,7 +773,7 @@
                 android:layout_marginHorizontal="4dp"
                 android:singleLine="true"
                 android:inputType="textNoSuggestions"
-                android:imeOptions="actionSend|flagNoExtractUi" />
+                android:imeOptions="actionSend|flagNoExtractUi|flagNoFullscreen" />
 
             <Button
                 android:id="@+id/btnSendCmd"
@@ -807,6 +807,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
+            android:focusable="false"
             android:fadeScrollbars="false">
 
             <TextView

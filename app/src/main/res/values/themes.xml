@@ -7,14 +7,12 @@
         <item name="android:windowBackground">@color/bg_dark</item>
         <item name="android:statusBarColor">@color/bg_dark</item>
         <item name="android:navigationBarColor">@color/bg_dark</item>
-        <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="buttonStyle">@style/BiosKeyButton</item>
         <item name="android:buttonStyle">@style/BiosKeyButton</item>
     </style>
 
     <style name="Theme.TecladoBIOS.Fullscreen" parent="Theme.TecladoBIOS">
-        <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
