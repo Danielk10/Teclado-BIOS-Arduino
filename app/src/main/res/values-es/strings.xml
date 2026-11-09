@@ -3,7 +3,6 @@
     <!-- App & Header -->
     <string name="app_name">Teclado BIOS Arduino</string>
     <string name="title_app">Teclado BIOS Arduino</string>
-    <string name="title_badge">USB OTG HID</string>
     <string name="desc_usb_status">Estado USB</string>
     <string name="desc_mouse_bios">Ratón UEFI</string>
     <string name="desc_dpad_up">Arriba</string>
@@ -13,16 +12,13 @@
 
     <!-- USB Status -->
     <string name="usb_disconnected">USB: Desconectado</string>
-    <string name="usb_connected">USB: Conectado</string>
     <string name="usb_connected_device">USB: Conectado (%1$s)</string>
-    <string name="usb_connecting">USB: Conectando...</string>
     <string name="usb_no_device_detected">No se detectó ningún dispositivo USB serial.</string>
     <string name="usb_driver_unavailable">No se pudo obtener el controlador para el dispositivo USB.</string>
     <string name="usb_open_failed">Fallo al abrir la conexión USB (revisa permisos OTG).</string>
     <string name="usb_serial_open_error">Error al abrir puerto serial: %1$s</string>
     <string name="usb_connection_lost">Conexión serial perdida: %1$s</string>
     <string name="usb_permission_denied">Permiso USB denegado por el usuario.</string>
-    <string name="no_usb_device">Conecte el Arduino Uno con cable OTG.</string>
     <string name="arduino_connected_toast">Arduino Conectado (%1$s)</string>
 
     <!-- PC Link Status -->
@@ -58,8 +54,6 @@
     <!-- Cluster Headers -->
     <string name="cluster_bios_keys">ACCIONES BIOS</string>
     <string name="cluster_dpad">NAVEGACIÓN</string>
-    <string name="cluster_keyboard">TECLADO QWERTY</string>
-    <string name="cluster_monitor">MONITOR SERIAL EN VIVO</string>
     <string name="terminal_label">TX/RX SERIAL 9600 8N1:</string>
     <string name="terminal_initial_prompt">[SISTEMA] Listo. Conecte el Arduino por USB OTG... (Mantén presionado para copiar)</string>
 

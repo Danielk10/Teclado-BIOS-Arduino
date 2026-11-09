@@ -38,10 +38,10 @@ Una aplicación Android diseñada para convertir tu smartphone o tablet en un te
   - Deslizamiento vertical con 2 dedos: Rueda de desplazamiento (Scroll Wheel `#MW:dz`).
 - **3 Botones Físicos de Ratón Verificados:** Clic Izquierdo (`L`), Rueda Central (`M`) y Clic Derecho (`R`) con soporte completo de clic simple y arrastre continuo (`#MD:L/R/M` y `#MU:L/R/M`).
 - **Teclado QWERTY Completo con Capa Shift:** Todas las letras, números y signos funcionan como en un teclado físico. El botón `MAYÚS` (en la cabecera o en el propio teclado) conmuta una capa persistente de símbolos (`!@#$%^&*()`, `_-+=`, `{}[]`, `|`, `:`, `"`, `<`, `>`, `?`, `~`) y permite volver a las letras con otra pulsación. La app activa automáticamente el modo `#TEXTO` del firmware para que letras como `e`, `r`, `d`, `u`, `l`, `s`, `x`, `f`, `b`, `2` o `0` escriban texto normal en lugar de disparar los atajos rápidos de BIOS.
-- **Distribución Ergonómica:** Teclado QWERTY a la izquierda, teclas de acción BIOS en el centro y D-Pad de navegación con `OK/ENTER` a la derecha.
+- **Distribución Ergonómica:** Teclas de acción BIOS a la izquierda, teclado QWERTY en el centro y D-Pad de navegación con `OK/ENTER` a la derecha.
 - **Teclas Dedicadas para BIOS/UEFI:** Botones táctiles específicos para navegación rápida: `SUPR/DEL`, `F2 SETUP`, `F11 BOOT`, `F12 BOOT`, `F10 GUARDAR`, `ESC`, `ENTER`, `TAB`, `ESPACIO`, `+ (SUBIR)`, `- (BAJAR)`, `F1 AYUDA`, `F9 DEFAULT`, `RE PÁG` y `AV PÁG`.
 - **D-Pad de Navegación Direccional:** Cruzeta con flechas `UP`, `DOWN`, `LEFT`, `RIGHT` y botón central `OK/ENTER`.
-- **Consola Serie Ampliada con Copiado Fácil:** Altura expandida para visualización clara de logs TX/RX, con botón dedicado de copiado al portapapeles y soporte de **pulsación sostenida** sobre el texto para copiar instantáneamente todo el registro.
+- **Consola Serie Ampliada con Copiado Fácil:** Altura expandida para visualización clara de logs TX/RX, con botón dedicado de copiado al portapapeles y soporte de **pulsación sostenida** sobre el texto para copiar instantáneamente todo el registro. El campo de comandos se edita **directamente sobre la consola** (sin editor a pantalla completa) y se envía con `ENVIAR` o con la tecla de acción del teclado.
 - **Sin Dependencias de Nube ni Bloatware:** Aplicación 100% offline, ligera y respetuosa con los recursos.
 
 ---
@@ -316,7 +316,7 @@ identidad USB `16c0:27dc` y los report descriptors de la versión 2.0.
    - Pulsar `DEL` o `F2` repetidamente desde la app para ingresar a la configuración de la BIOS/UEFI.
    - Navegar con las flechas direccionales táctiles y configurar los parámetros necesarios.
 7. Para escribir texto o contraseñas:
-   - Usar el teclado QWERTY de la izquierda.
+   - Usar el teclado QWERTY del centro.
    - Pulsar `MAYÚS` para acceder a los símbolos de la segunda fila de cada tecla y volver a pulsarlo para regresar a las letras.
    - La tecla `Ñ` se envía en la posición física de `;`/`:`, de modo que un teclado en español produce `ñ` y `Ñ`.
 
